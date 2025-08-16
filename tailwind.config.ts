@@ -61,6 +61,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				contractor: {
+					blue: 'hsl(var(--contractor-blue))',
+					'blue-light': 'hsl(var(--contractor-blue-light))',
+					orange: 'hsl(var(--contractor-orange))',
+					'orange-light': 'hsl(var(--contractor-orange-light))',
+					gray: 'hsl(var(--contractor-gray))',
+					'gray-light': 'hsl(var(--contractor-gray-light))'
 				}
 			},
 			borderRadius: {
