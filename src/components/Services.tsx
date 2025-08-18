@@ -1,47 +1,72 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import kitchenImage from "@/assets/kitchen-remodel.jpg";
 import bathroomImage from "@/assets/bathroom-remodel.jpg";
 import exteriorImage from "@/assets/exterior-work.jpg";
+import kitchenImage from "@/assets/kitchen-remodel.jpg";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
 
 const services = [
   {
     title: "Kitchen Remodeling",
-    description: "Complete kitchen transformations with modern designs, quality cabinets, and professional installation.",
+    description:
+      "Complete kitchen transformations with modern designs, quality cabinets, and professional installation.",
     image: kitchenImage,
-    features: ["Custom Cabinetry", "Countertop Installation", "Appliance Integration", "Modern Lighting"]
+    features: [
+      "Custom Cabinetry",
+      "Countertop Installation",
+      "Appliance Integration",
+      "Modern Lighting",
+    ],
   },
   {
     title: "Bathroom Renovation",
-    description: "Luxurious bathroom makeovers featuring contemporary fixtures and elegant tile work.",
+    description:
+      "Luxurious bathroom makeovers featuring contemporary fixtures and elegant tile work.",
     image: bathroomImage,
-    features: ["Tile Installation", "Modern Fixtures", "Shower & Tub", "Vanity Solutions"]
+    features: [
+      "Tile Installation",
+      "Modern Fixtures",
+      "Shower & Tub",
+      "Vanity Solutions",
+    ],
   },
   {
     title: "Exterior Work",
-    description: "Enhance your home's curb appeal with professional siding, roofing, and exterior improvements.",
+    description:
+      "Enhance your home's curb appeal with professional siding, roofing, and exterior improvements.",
     image: exteriorImage,
-    features: ["Siding Installation", "Roofing Services", "Windows & Doors", "Deck Construction"]
-  }
+    features: [
+      "Siding Installation",
+      "Roofing Services",
+      "Windows & Doors",
+      "Deck Construction",
+    ],
+  },
 ];
 
 const Services = () => {
   return (
-    <section id="services" className="section-padding bg-contractor-gray-light/30">
+    <section
+      id="services"
+      className="section-padding bg-contractor-gray-light/30 smooth-scroll-target"
+    >
       <div className="container-width">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl lg:text-5xl font-bold text-foreground">
             Professional Contracting Services
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            We provide creative remodeling services for your bathroom, kitchen, and complete home transformations
+            We provide creative remodeling services for your bathroom, kitchen,
+            and complete home transformations
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card key={index} className="contractor-card-gradient border-0 hover:scale-105 transition-all duration-300 group">
+            <Card
+              key={index}
+              className="contractor-card-gradient border-0 hover:scale-105 transition-all duration-300 group"
+            >
               <CardContent className="p-0">
                 <div className="aspect-square overflow-hidden rounded-t-lg">
                   <img
@@ -54,12 +79,13 @@ const Services = () => {
                   <h3 className="text-xl font-semibold text-foreground">
                     {service.title}
                   </h3>
-                  <p className="text-muted-foreground">
-                    {service.description}
-                  </p>
+                  <p className="text-muted-foreground">{service.description}</p>
                   <ul className="space-y-1 text-sm">
                     {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center text-muted-foreground">
+                      <li
+                        key={idx}
+                        className="flex items-center text-muted-foreground"
+                      >
                         <div className="w-1.5 h-1.5 bg-contractor-orange rounded-full mr-2" />
                         {feature}
                       </li>
