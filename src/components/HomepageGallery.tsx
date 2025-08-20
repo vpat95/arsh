@@ -22,7 +22,7 @@ const HomepageGallery = () => {
 
         const response = await fetch(
           import.meta.env.PROD
-            ? "https://arsh-modernize-build-rni8wukwx-vpat95s-projects.vercel.app/api/gallery/home"
+            ? "https://arsh-theta.vercel.app/api/gallery/home"
             : "/api/gallery/home"
         );
 

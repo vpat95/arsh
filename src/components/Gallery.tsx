@@ -35,7 +35,7 @@ const Gallery = () => {
 
       const response = await fetch(
         import.meta.env.PROD
-          ? `https://arsh-modernize-build-rni8wukwx-vpat95s-projects.vercel.app/api/gallery/${category}`
+          ? `https://arsh-theta.vercel.app/api/gallery/${category}`
           : `/api/gallery/${category}`
       );
 
