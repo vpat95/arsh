@@ -40,12 +40,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  try {
-    const { category } = req.query;
-    const categoryStr = Array.isArray(category)
-      ? category[0]
-      : category || "all";
+  const { category } = req.query;
+  const categoryStr = Array.isArray(category) ? category[0] : category || "all";
 
+  // Debug: Log the request
+  console.log("API Request:", {
+    method: req.method,
+    url: req.url,
+    category: categoryStr,
+    hasGoogleType: !!process.env.GOOGLE_TYPE,
+    hasGoogleProjectId: !!process.env.GOOGLE_PROJECT_ID,
+    hasGoogleClientEmail: !!process.env.GOOGLE_CLIENT_EMAIL,
+    hasGoogleDriveMainGallery: !!process.env.GOOGLE_DRIVE_MAIN_GALLERY,
+  });
+
+  try {
     const folderIds = FOLDER_MAP[categoryStr as keyof typeof FOLDER_MAP];
 
     if (!folderIds || folderIds.length === 0) {
@@ -92,6 +101,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(200).json({ images, category: categoryStr });
   } catch (err: any) {
     console.error("Error fetching gallery:", err.message);
-    res.status(500).json({ error: "Failed to fetch images" });
+    console.error("Full error:", err);
+    console.error("Category:", categoryStr);
+    console.error("Environment variables:", {
+      hasType: !!process.env.GOOGLE_TYPE,
+      hasProjectId: !!process.env.GOOGLE_PROJECT_ID,
+      hasClientEmail: !!process.env.GOOGLE_CLIENT_EMAIL,
+      hasFolderId: !!process.env.GOOGLE_DRIVE_MAIN_GALLERY,
+    });
+    res.status(500).json({
+      error: "Failed to fetch images",
+      details: err.message,
+      category: categoryStr,
+    });
   }
 }
