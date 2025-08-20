@@ -1,9 +1,10 @@
 import About from "@/components/About";
 import Contact from "@/components/Contact";
+import ElfsightReviews from "@/components/ElfsightReviews";
 import Footer from "@/components/Footer";
-import GoogleReviews from "@/components/GoogleReviews";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import HomepageGallery from "@/components/HomepageGallery";
 import Services from "@/components/Services";
 
 const Index = () => {
@@ -12,7 +13,8 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
-        <GoogleReviews />
+        <ElfsightReviews />
+        <HomepageGallery />
         <Services />
         <About />
         <Contact />
