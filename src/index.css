@@ -15,44 +15,44 @@
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 27%;
 
-    /* Professional blue - trust and reliability */
-    --primary: 214 89% 35%;
-    --primary-foreground: 0 0% 98%;
+    /* Logo gold/bronze - primary brand color */
+    --primary: 42 67% 40%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Warm construction orange */
-    --secondary: 25 95% 53%;
-    --secondary-foreground: 0 0% 98%;
+    /* Logo gold/bronze - secondary brand color */
+    --secondary: 42 67% 40%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 25 95% 53%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 42 67% 40%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 214 89% 35%;
+    --border: 42 67% 90%;
+    --input: 42 67% 90%;
+    --ring: 42 67% 40%;
 
-    /* Custom contractor colors */
-    --contractor-blue: 214 89% 35%;
-    --contractor-blue-light: 214 89% 85%;
-    --contractor-orange: 25 95% 53%;
-    --contractor-orange-light: 25 95% 85%;
+    /* Custom contractor colors - updated to logo theme */
+    --contractor-gold: 42 67% 40%;
+    --contractor-gold-light: 42 67% 85%;
+    --contractor-gold-dark: 42 67% 25%;
+    --contractor-white: 0 0% 100%;
     --contractor-gray: 215 10% 40%;
     --contractor-gray-light: 215 10% 95%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(var(--contractor-blue)), hsl(var(--contractor-blue) / 0.8));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--contractor-gold)), hsl(var(--contractor-gold) / 0.8));
     --gradient-card: linear-gradient(145deg, hsl(var(--background)), hsl(var(--contractor-gray-light)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--contractor-orange)), hsl(var(--contractor-orange) / 0.9));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--contractor-gold)), hsl(var(--contractor-gold) / 0.9));
 
     /* Shadows */
-    --shadow-soft: 0 4px 20px hsl(var(--contractor-blue) / 0.1);
+    --shadow-soft: 0 4px 20px hsl(var(--contractor-gold) / 0.1);
     --shadow-card: 0 8px 30px hsl(var(--contractor-gray) / 0.15);
-    --shadow-button: 0 4px 15px hsl(var(--contractor-orange) / 0.3);
+    --shadow-button: 0 4px 15px hsl(var(--contractor-gold) / 0.3);
 
     --radius: 0.5rem;
 

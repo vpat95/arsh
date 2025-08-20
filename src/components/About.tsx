@@ -7,25 +7,25 @@ const stats = [
     icon: Users,
     label: "Happy Clients",
     value: "200+",
-    color: "text-contractor-blue",
+    color: "text-contractor-gold",
   },
   {
     icon: Award,
     label: "Years Experience",
     value: "20+",
-    color: "text-contractor-orange",
+    color: "text-contractor-gold",
   },
   {
     icon: Shield,
     label: "Insured & Bonded",
     value: "100%",
-    color: "text-contractor-blue",
+    color: "text-contractor-gold",
   },
   {
     icon: Clock,
     label: "On-Time Delivery",
     value: "98%",
-    color: "text-contractor-orange",
+    color: "text-contractor-gold",
   },
 ];
 
@@ -66,7 +66,7 @@ const About = () => {
               </h3>
               <div className="grid sm:grid-cols-2 gap-4 text-sm">
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-contractor-orange rounded-full mt-2" />
+                  <div className="w-2 h-2 bg-contractor-gold rounded-full mt-2" />
                   <div>
                     <div className="font-medium text-foreground">
                       Free Estimates
@@ -77,7 +77,7 @@ const About = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-contractor-orange rounded-full mt-2" />
+                  <div className="w-2 h-2 bg-contractor-gold rounded-full mt-2" />
                   <div>
                     <div className="font-medium text-foreground">
                       Fully Insured Team
@@ -88,7 +88,7 @@ const About = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-contractor-orange rounded-full mt-2" />
+                  <div className="w-2 h-2 bg-contractor-gold rounded-full mt-2" />
                   <div>
                     <div className="font-medium text-foreground">
                       Professional Crew
@@ -99,7 +99,7 @@ const About = () => {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-contractor-orange rounded-full mt-2" />
+                  <div className="w-2 h-2 bg-contractor-gold rounded-full mt-2" />
                   <div>
                     <div className="font-medium text-foreground">
                       Proven Experience
@@ -122,7 +122,7 @@ const About = () => {
               >
                 <CardContent className="p-6 text-center space-y-4">
                   <div
-                    className={`w-12 h-12 mx-auto rounded-lg bg-gradient-to-br from-contractor-blue-light to-contractor-orange-light flex items-center justify-center`}
+                    className={`w-12 h-12 mx-auto rounded-lg bg-gradient-to-br from-contractor-gold-light to-contractor-gold flex items-center justify-center`}
                   >
                     <stat.icon className={`w-6 h-6 ${stat.color}`} />
                   </div>

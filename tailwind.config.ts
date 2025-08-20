@@ -63,10 +63,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				contractor: {
-					blue: 'hsl(var(--contractor-blue))',
-					'blue-light': 'hsl(var(--contractor-blue-light))',
-					orange: 'hsl(var(--contractor-orange))',
-					'orange-light': 'hsl(var(--contractor-orange-light))',
+					gold: 'hsl(var(--contractor-gold))',
+					'gold-light': 'hsl(var(--contractor-gold-light))',
+					'gold-dark': 'hsl(var(--contractor-gold-dark))',
+					white: 'hsl(var(--contractor-white))',
 					gray: 'hsl(var(--contractor-gray))',
 					'gray-light': 'hsl(var(--contractor-gray-light))'
 				}

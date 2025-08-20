@@ -1,5 +1,7 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
+import fs from "fs";
 import { google } from "googleapis";
+import path from "path";
 
 // Map categories to folder IDs
 const FOLDER_MAP = {
@@ -23,6 +25,33 @@ const FOLDER_MAP = {
   handyman: [process.env.GOOGLE_DRIVE_HANDYMAN_PROJECTS],
   flooring: [process.env.GOOGLE_DRIVE_FLOORING_PROJECTS],
   commercial: [process.env.GOOGLE_DRIVE_COMMERCIAL_PROJECTS],
+};
+
+// Development mode - serve local test images
+const getDevImages = (category: string) => {
+  const testImagesPath = path.join(
+    process.cwd(),
+    "src",
+    "assets",
+    "test-images"
+  );
+
+  try {
+    const files = fs.readdirSync(testImagesPath);
+    const imageFiles = files.filter((file) =>
+      /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
+    );
+
+    return imageFiles.map((file, index) => ({
+      id: `dev-${index}`,
+      name: file,
+      url: `/src/assets/test-images/${file}`,
+      category: category,
+    }));
+  } catch (error) {
+    console.error("Error reading test images:", error);
+    return [];
+  }
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -54,7 +83,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     hasGoogleDriveMainGallery: !!process.env.GOOGLE_DRIVE_MAIN_GALLERY,
   });
 
+  // Check if we're in development mode (no Google credentials)
+  const isDevMode =
+    !process.env.GOOGLE_TYPE || process.env.NODE_ENV === "development";
 
+  if (isDevMode) {
+    console.log("Running in development mode with test images");
+    const devImages = getDevImages(categoryStr);
+    return res.status(200).json({ images: devImages, category: categoryStr });
+  }
 
   try {
     const folderIds = FOLDER_MAP[categoryStr as keyof typeof FOLDER_MAP];

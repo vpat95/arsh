@@ -86,7 +86,7 @@ const Services = () => {
                         key={idx}
                         className="flex items-center text-muted-foreground"
                       >
-                        <div className="w-1.5 h-1.5 bg-contractor-orange rounded-full mr-2" />
+                        <div className="w-1.5 h-1.5 bg-contractor-gold rounded-full mr-2" />
                         {feature}
                       </li>
                     ))}

@@ -1,3 +1,4 @@
+import arshLogo from "@/assets/arsh_logo.webp";
 import { Button } from "@/components/ui/button";
 import { Menu, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -74,18 +75,12 @@ const Header = () => {
       <header className="bg-background/95 backdrop-blur-sm border-b sticky top-0 z-50">
         <div className="container-width">
           <div className="flex items-center justify-between py-4">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 contractor-gradient-bg rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">A</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-primary">
-                  Arsh Consultancy & Contractors
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  Professional Renovation Services
-                </p>
-              </div>
+            <Link to="/" className="flex items-center">
+              <img
+                src={arshLogo}
+                alt="Arsh Consultancy & Contractors Logo"
+                className="h-16 w-auto"
+              />
             </Link>
 
             {/* Desktop Navigation */}
@@ -163,11 +158,12 @@ const Header = () => {
         <div className="p-6">
           {/* Mobile Menu Header */}
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 contractor-gradient-bg rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">A</span>
-              </div>
-              <span className="font-bold text-primary">Arsh Contractors</span>
+            <div className="flex items-center">
+              <img
+                src={arshLogo}
+                alt="Arsh Consultancy & Contractors Logo"
+                className="h-14 w-auto"
+              />
             </div>
             <Button variant="ghost" size="icon" onClick={closeMobileMenu}>
               <X className="w-5 h-5" />

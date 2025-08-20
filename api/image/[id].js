@@ -1,5 +1,7 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
+import fs from "fs";
 import { google } from "googleapis";
+import path from "path";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Handle CORS
@@ -24,7 +26,45 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: "File ID is required" });
     }
 
+    // Check if we're in development mode
+    const isDevMode =
+      !process.env.GOOGLE_TYPE || process.env.NODE_ENV === "development";
 
+    if (isDevMode && fileId.startsWith("dev-")) {
+      // Serve local test images in development
+      const testImagesPath = path.join(
+        process.cwd(),
+        "src",
+        "assets",
+        "test-images"
+      );
+      const files = fs.readdirSync(testImagesPath);
+      const imageFiles = files.filter((file) =>
+        /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
+      );
+
+      const index = parseInt(fileId.replace("dev-", ""));
+      if (index >= 0 && index < imageFiles.length) {
+        const imagePath = path.join(testImagesPath, imageFiles[index]);
+        const imageBuffer = fs.readFileSync(imagePath);
+
+        // Determine MIME type from file extension
+        const ext = path.extname(imageFiles[index]).toLowerCase();
+        const mimeType =
+          {
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".png": "image/png",
+            ".gif": "image/gif",
+            ".webp": "image/webp",
+          }[ext] || "image/jpeg";
+
+        res.setHeader("Content-Type", mimeType);
+        res.setHeader("Cache-Control", "public, max-age=3600");
+        res.send(imageBuffer);
+        return;
+      }
+    }
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
