@@ -87,7 +87,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const response = await drive.files.list({
       q: query,
-      fields: "files(id, name, parents)",
+      fields: "files(id, name, parents, webContentLink)",
     });
 
     const files = response.data.files || [];
@@ -97,7 +97,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const images = files.map((file) => ({
       id: file.id,
       name: file.name,
-      url: `https://drive.google.com/file/d/${file.id}/preview`,
+      url:
+        file.webContentLink ||
+        `https://drive.google.com/uc?export=view&id=${file.id}`,
       category: categoryStr,
     }));
 
