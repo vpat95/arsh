@@ -36,6 +36,8 @@ const HomepageGallery = () => {
           throw new Error(data.error);
         }
 
+        console.log("Frontend received data:", data);
+        console.log("Images array:", data.images);
         setImages(data.images || []);
       } catch (err) {
         console.error("Error fetching gallery:", err);

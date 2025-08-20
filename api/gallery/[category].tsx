@@ -91,12 +91,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     const files = response.data.files || [];
+    console.log("Found files:", files.length);
+    console.log("Sample file:", files[0]);
+
     const images = files.map((file) => ({
       id: file.id,
       name: file.name,
-      url: `https://drive.google.com/uc?id=${file.id}`,
+      url: `https://drive.google.com/file/d/${file.id}/preview`,
       category: categoryStr,
     }));
+
+    console.log("Generated images:", images.length);
+    console.log("Sample image URL:", images[0]?.url);
 
     res.status(200).json({ images, category: categoryStr });
   } catch (err: any) {
