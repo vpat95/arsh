@@ -1,5 +1,6 @@
 import arshLogo from "@/assets/arsh_logo.webp";
 import { Facebook, Instagram, MapPin, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -18,19 +19,24 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-gray-300 max-w-md">
-              Transforming homes across Bergen County with professional
-              renovation and remodeling services. Quality craftsmanship,
-              reliable service, and customer satisfaction guaranteed.
+              Transforming homes across North and Central Jersey with
+              professional renovation and remodeling services. Quality
+              craftsmanship, reliable service, and customer satisfaction
+              guaranteed.
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/kusharsh/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-contractor-gold transition-colors"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/arsh.c.contractors.inc/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-contractor-gold transition-colors"
               >
                 <Instagram className="w-5 h-5" />
@@ -43,44 +49,52 @@ const Footer = () => {
             <h4 className="font-semibold text-white">Services</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/projects?category=kitchen"
                   className="hover:text-contractor-gold transition-colors"
                 >
                   Kitchen Remodeling
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/projects?category=bathroom"
                   className="hover:text-contractor-gold transition-colors"
                 >
                   Bathroom Renovation
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/projects?category=exterior"
                   className="hover:text-contractor-gold transition-colors"
                 >
                   Exterior Work
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/projects?category=commercial"
                   className="hover:text-contractor-gold transition-colors"
                 >
-                  Interior Painting
-                </a>
+                  Commercial Projects
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/projects?category=handyman"
                   className="hover:text-contractor-gold transition-colors"
                 >
-                  Basement Finishing
-                </a>
+                  Handyman Services
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/projects?category=flooring"
+                  className="hover:text-contractor-gold transition-colors"
+                >
+                  Flooring Installation
+                </Link>
               </li>
             </ul>
           </div>
@@ -91,14 +105,18 @@ const Footer = () => {
             <div className="space-y-3 text-gray-300">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
-                <span>929-386-3248</span>
+                <a
+                  href="tel:929-386-3248"
+                  className="hover:text-contractor-gold transition-colors"
+                >
+                  929-386-3248
+                </a>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4" />
                 <span>Bergen County, NJ</span>
               </div>
               <div className="text-sm">
-                <div>Mon - Fri: 8AM - 6PM</div>
                 <div>Weekend consultations available</div>
               </div>
             </div>

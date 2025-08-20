@@ -1,45 +1,84 @@
-import bathroomImage from "@/assets/bathroom-remodel.jpg";
-import exteriorImage from "@/assets/exterior-work.jpg";
-import kitchenImage from "@/assets/kitchen-remodel.jpg";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import {
+  Bath,
+  Car,
+  ChefHat,
+  DoorOpen,
+  Droplets,
+  Hammer,
+  Home,
+  Lightbulb,
+  Music,
+  Paintbrush,
+  Palette,
+  Settings,
+  Snowflake,
+  Sofa,
+  Sparkles,
+  Square,
+  Star,
+  TreePine,
+  Tv,
+  Wrench,
+  Zap,
+} from "lucide-react";
 
 const services = [
   {
-    title: "Kitchen Remodeling",
-    description:
-      "Complete kitchen transformations with modern designs, quality cabinets, and professional installation.",
-    image: kitchenImage,
-    features: [
-      "Custom Cabinetry",
-      "Countertop Installation",
-      "Appliance Integration",
-      "Modern Lighting",
+    id: "interior",
+    category: "Interior Services",
+    icon: Home,
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
+    services: [
+      { name: "Drywall", icon: Square },
+      { name: "Plaster", icon: Palette },
+      { name: "Paint", icon: Paintbrush },
+      { name: "Framing", icon: Hammer },
+      { name: "Doors", icon: DoorOpen },
+      { name: "Hardwood Flooring", icon: Square },
+      { name: "Ceramic Tiles", icon: Square },
+      { name: "Vinyl Tiles", icon: Square },
+      { name: "Epoxy", icon: Droplets },
+      { name: "Kitchen Remodeling", icon: ChefHat },
+      { name: "Bath Remodeling", icon: Bath },
     ],
   },
   {
-    title: "Bathroom Renovation",
-    description:
-      "Luxurious bathroom makeovers featuring contemporary fixtures and elegant tile work.",
-    image: bathroomImage,
-    features: [
-      "Tile Installation",
-      "Modern Fixtures",
-      "Shower & Tub",
-      "Vanity Solutions",
+    id: "exterior",
+    category: "Exterior Services",
+    icon: Home,
+    color: "text-green-600",
+    bgColor: "bg-green-50",
+    services: [
+      { name: "Sidewalks", icon: Square },
+      { name: "Brick Grinding & Painting", icon: Paintbrush },
+      { name: "Brick Work", icon: Hammer },
+      { name: "Stucco", icon: Palette },
+      { name: "Angling Change", icon: Wrench },
+      { name: "Powerwashing", icon: Droplets },
+      { name: "Roof Repair & More", icon: Home },
     ],
   },
   {
-    title: "Exterior Work",
-    description:
-      "Enhance your home's curb appeal with professional siding, roofing, and exterior improvements.",
-    image: exteriorImage,
-    features: [
-      "Siding Installation",
-      "Roofing Services",
-      "Windows & Doors",
-      "Deck Construction",
+    id: "handyman",
+    category: "Handyman Services",
+    icon: Wrench,
+    color: "text-orange-600",
+    bgColor: "bg-orange-50",
+    services: [
+      { name: "Moving", icon: Car },
+      { name: "Seasonal Lighting", icon: Lightbulb },
+      { name: "Fixup Jobs", icon: Settings },
+      { name: "Decorations", icon: Star },
+      { name: "TV Mounting", icon: Tv },
+      { name: "Furniture Fixing", icon: Sofa },
+      { name: "Plumbing", icon: Droplets },
+      { name: "Electrical", icon: Zap },
+      { name: "Audio System Installation", icon: Music },
+      { name: "Landscaping", icon: TreePine },
+      { name: "Cleaning", icon: Sparkles },
+      { name: "Snow Removal & More", icon: Snowflake },
     ],
   },
 ];
@@ -48,64 +87,56 @@ const Services = () => {
   return (
     <section
       id="services"
-      className="section-padding bg-contractor-gray-light/30 smooth-scroll-target"
+      className="pt-16 pb-16 bg-muted/30 smooth-scroll-target"
     >
       <div className="container-width">
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl lg:text-5xl font-bold text-foreground">
-            Professional Contracting Services
+        <div className="text-center space-y-3 mb-8">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+            Professional <span className="text-primary">Services</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            We provide creative remodeling services for your bathroom, kitchen,
-            and complete home transformations
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            From interior renovations to exterior improvements and handyman
+            services, we provide comprehensive solutions for all your home
+            improvement needs.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
+        <div className="grid lg:grid-cols-3 gap-6">
+          {services.map((category, categoryIndex) => (
             <Card
-              key={index}
-              className="contractor-card-gradient border-0 hover:scale-105 transition-all duration-300 group"
+              key={categoryIndex}
+              className="contractor-card-gradient border-0 hover:shadow-lg transition-shadow"
             >
-              <CardContent className="p-0">
-                <div className="aspect-square overflow-hidden rounded-t-lg">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-6 space-y-4">
-                  <h3 className="text-xl font-semibold text-foreground">
-                    {service.title}
+              <CardContent className="p-6">
+                {/* Category Header */}
+                <div className="flex items-center space-x-3 mb-4">
+                  <div
+                    className={`w-10 h-10 rounded-lg ${category.bgColor} flex items-center justify-center`}
+                  >
+                    <category.icon className={`w-5 h-5 ${category.color}`} />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground">
+                    {category.category}
                   </h3>
-                  <p className="text-muted-foreground">{service.description}</p>
-                  <ul className="space-y-1 text-sm">
-                    {service.features.map((feature, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-center text-muted-foreground"
-                      >
-                        <div className="w-1.5 h-1.5 bg-contractor-gold rounded-full mr-2" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button variant="ghost" className="w-full group/btn">
-                    Learn More
-                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </Button>
+                </div>
+
+                {/* Services List */}
+                <div className="grid grid-cols-1 gap-2">
+                  {category.services.map((service, serviceIndex) => (
+                    <div
+                      key={serviceIndex}
+                      className="flex items-center space-x-2 p-2 rounded-md hover:bg-background/50 transition-colors"
+                    >
+                      <service.icon className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                      <span className="text-xs font-medium text-foreground">
+                        {service.name}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <Button variant="secondary" size="xl">
-            View All Services
-            <ArrowRight className="w-5 h-5" />
-          </Button>
         </div>
       </div>
     </section>

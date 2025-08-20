@@ -1,3 +1,5 @@
+import testImage1 from "@/assets/test-images/IMG_3157.jpg";
+import testImage2 from "@/assets/test-images/IMG_3516.jpg";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -10,14 +12,24 @@ interface ImageFile {
 
 const Hero = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [images, setImages] = useState<ImageFile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [images, setImages] = useState<ImageFile[]>([
+    {
+      id: "test-1",
+      name: "Professional Construction Work",
+      url: testImage1,
+    },
+    {
+      id: "test-2",
+      name: "Quality Renovation Project",
+      url: testImage2,
+    },
+  ]);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch images from Google Drive
+  // Fetch images from Google Drive and add them to existing test images
   useEffect(() => {
     const fetchHeroImages = async () => {
       try {
-        setLoading(true);
         const response = await fetch(
           import.meta.env.PROD
             ? "https://arsh-theta.vercel.app/api/gallery/home"
@@ -34,13 +46,13 @@ const Hero = () => {
           throw new Error(data.error);
         }
 
-        setImages(data.images || []);
+        // Add Google Drive images to existing test images
+        if (data.images && data.images.length > 0) {
+          setImages((prevImages) => [...prevImages, ...data.images]);
+        }
       } catch (err) {
         console.error("Error fetching hero images:", err);
-        // Fallback to empty array if API fails
-        setImages([]);
-      } finally {
-        setLoading(false);
+        // Keep existing test images if API fails
       }
     };
 
@@ -74,9 +86,9 @@ const Hero = () => {
                 Into Reality
               </h1>
               <p className="text-xl text-muted-foreground text-balance">
-                Professional renovation and remodeling services in Bergen
-                County. From kitchens to complete home makeovers, we deliver
-                exceptional quality with every project.
+                Professional renovation and remodeling services in North and
+                Central Jersey. From kitchens to complete home makeovers, we
+                deliver exceptional quality with every project.
               </p>
             </div>
 
@@ -94,6 +106,10 @@ const Hero = () => {
                 <CheckCircle className="w-5 h-5 text-contractor-gold" />
                 <span>20+ Years Experience</span>
               </div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-contractor-gold" />
+                <span>NJHIC Licensed</span>
+              </div>
             </div>
 
             {/* CTA Buttons */}
@@ -102,14 +118,25 @@ const Hero = () => {
                 variant="secondary"
                 size="xl"
                 className="contractor-button-shadow"
+                onClick={() => {
+                  const contactSection = document.getElementById("contact");
+                  if (contactSection) {
+                    contactSection.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }
+                }}
               >
                 Get Free Estimate
                 <ArrowRight className="w-5 h-5" />
               </Button>
-              <Button variant="outline" size="xl">
-                <Phone className="w-5 h-5" />
-                Call Now: 929-386-3248
-              </Button>
+              <a href="tel:929-386-3248">
+                <Button variant="outline" size="xl">
+                  <Phone className="w-5 h-5" />
+                  Call Now: 929-386-3248
+                </Button>
+              </a>
             </div>
           </div>
 
@@ -117,16 +144,7 @@ const Hero = () => {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden contractor-card-gradient p-1">
               <div className="relative w-full h-[500px] rounded-xl overflow-hidden">
-                {loading ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-muted-foreground">
-                        Loading images...
-                      </span>
-                    </div>
-                  </div>
-                ) : images.length > 0 ? (
+                {images.length > 0 ? (
                   <>
                     {images.map((image, index) => (
                       <img

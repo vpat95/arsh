@@ -1,6 +1,6 @@
 import arshLogo from "@/assets/arsh_logo.webp";
 import { Button } from "@/components/ui/button";
-import { Menu, Phone, X } from "lucide-react";
+import { Facebook, Instagram, Menu, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -116,14 +116,32 @@ const Header = () => {
 
             {/* CTA and Mobile Menu */}
             <div className="flex items-center space-x-4">
-              <Button
-                variant="hero"
-                size="lg"
-                className="hidden sm:flex items-center"
-              >
-                <Phone className="w-4 h-4" />
-                929-386-3248
-              </Button>
+              {/* Social Media Links */}
+              <div className="hidden sm:flex items-center space-x-2">
+                <a
+                  href="https://www.facebook.com/kusharsh/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-muted-foreground hover:text-contractor-gold transition-colors"
+                >
+                  <Facebook className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://www.instagram.com/arsh.c.contractors.inc/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-muted-foreground hover:text-contractor-gold transition-colors"
+                >
+                  <Instagram className="w-4 h-4" />
+                </a>
+              </div>
+
+              <a href="tel:929-386-3248" className="hidden sm:flex">
+                <Button variant="hero" size="lg" className="flex items-center">
+                  <Phone className="w-4 h-4" />
+                  Call for Free Estimate
+                </Button>
+              </a>
               <Button
                 variant="ghost"
                 size="icon"

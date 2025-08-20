@@ -4,6 +4,7 @@ import ElfsightReviews from "@/components/ElfsightReviews";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import Services from "@/components/Services";
 
 const Index = () => {
   return (
@@ -11,6 +12,7 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
+        <Services />
         <ElfsightReviews />
         <About />
         <Contact />
