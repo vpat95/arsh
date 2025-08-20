@@ -97,9 +97,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const images = files.map((file) => ({
       id: file.id,
       name: file.name,
-      url:
-        file.webContentLink ||
-        `https://drive.google.com/uc?export=view&id=${file.id}`,
+      url: `https://arsh-theta.vercel.app/api/image/${file.id}`,
       category: categoryStr,
     }));
 
