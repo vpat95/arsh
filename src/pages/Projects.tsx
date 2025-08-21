@@ -224,10 +224,10 @@ const Projects = () => {
     }
   }, [selectedCategoryFromUrl]);
 
-  // Scroll to top when component mounts
+  // Scroll to top when component mounts or when gallery opens
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [selectedCategory]);
 
   // Handle escape key to close image modal
   useEffect(() => {
