@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -219,27 +219,6 @@ const Projects = () => {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [selectedImage]);
 
-  const nextImage = (categoryId: string) => {
-    const images = categoryImages[categoryId] || [];
-    if (images.length > 1) {
-      setCurrentImageIndexes((prev) => ({
-        ...prev,
-        [categoryId]: (prev[categoryId] + 1) % images.length,
-      }));
-    }
-  };
-
-  const prevImage = (categoryId: string) => {
-    const images = categoryImages[categoryId] || [];
-    if (images.length > 1) {
-      setCurrentImageIndexes((prev) => ({
-        ...prev,
-        [categoryId]:
-          prev[categoryId] === 0 ? images.length - 1 : prev[categoryId] - 1,
-      }));
-    }
-  };
-
   const handleViewProjects = (categoryId: string) => {
     setSelectedCategory(categoryId);
   };
@@ -409,68 +388,13 @@ const Projects = () => {
                     id={`category-${category.id}`}
                     className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-105"
                   >
-                    {/* Image Carousel */}
+                    {/* Default Image */}
                     <div className="relative h-64 bg-gray-100">
-                      {isLoading ? (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                            <span className="text-muted-foreground">
-                              Loading...
-                            </span>
-                          </div>
-                        </div>
-                      ) : images.length > 0 ? (
-                        <>
-                          {/* Main Image */}
-                          <img
-                            src={images[currentIndex]?.url}
-                            alt={`${category.name} - ${images[currentIndex]?.name}`}
-                            className="w-full h-full object-cover"
-                          />
-
-                          {/* Carousel Controls */}
-                          {images.length > 1 && (
-                            <>
-                              {/* Previous Button */}
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  prevImage(category.id);
-                                }}
-                                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                              >
-                                <ChevronLeft className="w-4 h-4" />
-                              </button>
-
-                              {/* Next Button */}
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  nextImage(category.id);
-                                }}
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                              >
-                                <ChevronRight className="w-4 h-4" />
-                              </button>
-
-                              {/* Image Counter */}
-                              <div className="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
-                                {currentIndex + 1} / {images.length}
-                              </div>
-                            </>
-                          )}
-                        </>
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center space-y-2">
-                            <div className="text-4xl">{category.icon}</div>
-                            <p className="text-muted-foreground text-sm">
-                              No images available
-                            </p>
-                          </div>
-                        </div>
-                      )}
+                      <img
+                        src={defaultImages[category.id]?.[0]?.url}
+                        alt={`${category.name} - Default`}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
 
                     {/* Category Info */}
