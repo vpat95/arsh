@@ -85,6 +85,9 @@ const Projects = () => {
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
+  const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
+    new Set()
+  );
 
   // Initialize current image indexes for each category
   useEffect(() => {
@@ -141,6 +144,17 @@ const Projects = () => {
     ],
   };
 
+  // Preload images for faster rendering
+  const preloadImage = (url: string) => {
+    if (preloadedImages.has(url)) return;
+
+    const img = new Image();
+    img.onload = () => {
+      setPreloadedImages((prev) => new Set(prev).add(url));
+    };
+    img.src = url;
+  };
+
   // Fetch images for each category
   useEffect(() => {
     const fetchCategoryImages = async () => {
@@ -177,6 +191,11 @@ const Projects = () => {
               ...defaultImages[category.id],
               ...fetchedImages,
             ];
+
+            // Preload all images for this category
+            fetchedImages.forEach((image) => {
+              preloadImage(image.url);
+            });
           } else {
             console.error(
               `Failed to fetch ${category.name} images:`,
@@ -268,7 +287,7 @@ const Projects = () => {
                 <div className="flex justify-center items-center py-12">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                   <span className="ml-3 text-muted-foreground">
-                    Loading images...
+                    Loading images from Google Drive...
                   </span>
                 </div>
               ) : images.length > 0 ? (
@@ -282,7 +301,12 @@ const Projects = () => {
                       <img
                         src={image.url}
                         alt={image.name}
-                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+                        className={`w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110 ${
+                          !preloadedImages.has(image.url)
+                            ? "animate-pulse bg-gray-200"
+                            : ""
+                        }`}
+                        onLoad={() => preloadImage(image.url)}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="absolute bottom-4 left-4 right-4">
@@ -409,11 +433,7 @@ const Projects = () => {
                       <p className="text-muted-foreground mb-4 line-clamp-2">
                         {category.description}
                       </p>
-                      <div className="flex justify-between items-center">
-                        <Badge variant="outline">
-                          {images.length} project
-                          {images.length !== 1 ? "s" : ""}
-                        </Badge>
+                      <div className="flex justify-end">
                         <Button
                           variant="outline"
                           size="sm"

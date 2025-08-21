@@ -101,6 +101,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const files = response.data.files || [];
     console.log("Found files:", files.length);
     console.log("Sample file:", files[0]);
+    console.log("Query used:", query);
+    console.log("Folder IDs being searched:", folderIds);
 
     const images = files.map((file) => ({
       id: file.id,
