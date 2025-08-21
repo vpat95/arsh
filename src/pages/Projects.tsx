@@ -158,10 +158,6 @@ const Projects = () => {
       // Fetch images for each category and append to defaults
       for (const category of projectCategories) {
         try {
-          // Set loading to true only when fetching additional images
-          newLoading[category.id] = true;
-          setLoading({ ...newLoading });
-
           const response = await fetch(
             import.meta.env.PROD
               ? `https://arsh-theta.vercel.app/api/gallery/${category.id}`
@@ -171,18 +167,25 @@ const Projects = () => {
           if (response.ok) {
             const data = await response.json();
             const fetchedImages = data.images || [];
+            console.log(
+              `Fetched ${fetchedImages.length} images for ${category.name}:`,
+              fetchedImages
+            );
 
             // Combine default images with fetched images
             newCategoryImages[category.id] = [
               ...defaultImages[category.id],
               ...fetchedImages,
             ];
+          } else {
+            console.error(
+              `Failed to fetch ${category.name} images:`,
+              response.status
+            );
           }
         } catch (error) {
           console.error(`Error fetching ${category.name} images:`, error);
           // Keep default images if fetch fails
-        } finally {
-          newLoading[category.id] = false;
         }
       }
 

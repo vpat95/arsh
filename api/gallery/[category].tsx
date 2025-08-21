@@ -52,12 +52,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     hasGoogleProjectId: !!process.env.GOOGLE_PROJECT_ID,
     hasGoogleClientEmail: !!process.env.GOOGLE_CLIENT_EMAIL,
     hasGoogleDriveMainGallery: !!process.env.GOOGLE_DRIVE_MAIN_GALLERY,
+    hasKitchenProjects: !!process.env.GOOGLE_DRIVE_KITCHEN_PROJECTS,
+    hasBathroomProjects: !!process.env.GOOGLE_DRIVE_BATHROOM_PROJECTS,
+    hasExteriorProjects: !!process.env.GOOGLE_DRIVE_EXTERIOR_PROJECTS,
+    hasCommercialProjects: !!process.env.GOOGLE_DRIVE_COMMERCIAL_PROJECTS,
+    hasHandymanProjects: !!process.env.GOOGLE_DRIVE_HANDYMAN_PROJECTS,
+    hasFlooringProjects: !!process.env.GOOGLE_DRIVE_FLOORING_PROJECTS,
   });
-
-
 
   try {
     const folderIds = FOLDER_MAP[categoryStr as keyof typeof FOLDER_MAP];
+
+    console.log("Folder IDs for category:", categoryStr, ":", folderIds);
 
     if (!folderIds || folderIds.length === 0) {
       return res.status(400).json({ error: "Invalid category" });
