@@ -52,6 +52,7 @@ const Footer = () => {
                 <Link
                   to="/projects?category=kitchen"
                   className="hover:text-contractor-gold transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
                 >
                   Kitchen Remodeling
                 </Link>
@@ -60,6 +61,7 @@ const Footer = () => {
                 <Link
                   to="/projects?category=bathroom"
                   className="hover:text-contractor-gold transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
                 >
                   Bathroom Renovation
                 </Link>
@@ -68,6 +70,7 @@ const Footer = () => {
                 <Link
                   to="/projects?category=exterior"
                   className="hover:text-contractor-gold transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
                 >
                   Exterior Work
                 </Link>
@@ -76,6 +79,7 @@ const Footer = () => {
                 <Link
                   to="/projects?category=commercial"
                   className="hover:text-contractor-gold transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
                 >
                   Commercial Projects
                 </Link>
@@ -84,6 +88,7 @@ const Footer = () => {
                 <Link
                   to="/projects?category=handyman"
                   className="hover:text-contractor-gold transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
                 >
                   Handyman Services
                 </Link>
@@ -92,6 +97,7 @@ const Footer = () => {
                 <Link
                   to="/projects?category=flooring"
                   className="hover:text-contractor-gold transition-colors"
+                  onClick={() => window.scrollTo(0, 0)}
                 >
                   Flooring Installation
                 </Link>

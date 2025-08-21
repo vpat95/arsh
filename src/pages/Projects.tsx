@@ -5,7 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
+// Import default test images for each category
+import bathroomDefault from "@/assets/test-images/bathroom.JPG";
+import commercialDefault from "@/assets/test-images/commercial.JPG";
+import exteriorDefault from "@/assets/test-images/exterior.JPG";
+import flooringDefault from "@/assets/test-images/flooring.JPG";
+import handymanDefault from "@/assets/test-images/handyman.JPG";
+import kitchenDefault from "@/assets/test-images/kitchen.JPG";
 
 interface ImageFile {
   id: string;
@@ -65,6 +73,7 @@ const projectCategories: ProjectCategory[] = [
 
 const Projects = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const selectedCategoryFromUrl = searchParams.get("category");
 
   const [categoryImages, setCategoryImages] = useState<
@@ -75,6 +84,7 @@ const Projects = () => {
   >({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
 
   // Initialize current image indexes for each category
   useEffect(() => {
@@ -85,21 +95,73 @@ const Projects = () => {
     setCurrentImageIndexes(initialIndexes);
   }, []);
 
+  // Create default images object
+  const defaultImages: Record<string, ImageFile[]> = {
+    kitchen: [
+      {
+        id: "kitchen-default",
+        name: "Kitchen Default",
+        url: kitchenDefault,
+      },
+    ],
+    bathroom: [
+      {
+        id: "bathroom-default",
+        name: "Bathroom Default",
+        url: bathroomDefault,
+      },
+    ],
+    exterior: [
+      {
+        id: "exterior-default",
+        name: "Exterior Default",
+        url: exteriorDefault,
+      },
+    ],
+    commercial: [
+      {
+        id: "commercial-default",
+        name: "Commercial Default",
+        url: commercialDefault,
+      },
+    ],
+    handyman: [
+      {
+        id: "handyman-default",
+        name: "Handyman Default",
+        url: handymanDefault,
+      },
+    ],
+    flooring: [
+      {
+        id: "flooring-default",
+        name: "Flooring Default",
+        url: flooringDefault,
+      },
+    ],
+  };
+
   // Fetch images for each category
   useEffect(() => {
     const fetchCategoryImages = async () => {
       const newLoading: Record<string, boolean> = {};
       const newCategoryImages: Record<string, ImageFile[]> = {};
 
-      // Set all categories to loading
+      // Initialize with default images
       projectCategories.forEach((category) => {
-        newLoading[category.id] = true;
+        newCategoryImages[category.id] = defaultImages[category.id] || [];
+        newLoading[category.id] = false; // Set to false since we have default images
       });
+      setCategoryImages(newCategoryImages);
       setLoading(newLoading);
 
-      // Fetch images for each category
+      // Fetch images for each category and append to defaults
       for (const category of projectCategories) {
         try {
+          // Set loading to true only when fetching additional images
+          newLoading[category.id] = true;
+          setLoading({ ...newLoading });
+
           const response = await fetch(
             import.meta.env.PROD
               ? `https://arsh-theta.vercel.app/api/gallery/${category.id}`
@@ -108,13 +170,17 @@ const Projects = () => {
 
           if (response.ok) {
             const data = await response.json();
-            newCategoryImages[category.id] = data.images || [];
-          } else {
-            newCategoryImages[category.id] = [];
+            const fetchedImages = data.images || [];
+
+            // Combine default images with fetched images
+            newCategoryImages[category.id] = [
+              ...defaultImages[category.id],
+              ...fetchedImages,
+            ];
           }
         } catch (error) {
           console.error(`Error fetching ${category.name} images:`, error);
-          newCategoryImages[category.id] = [];
+          // Keep default images if fetch fails
         } finally {
           newLoading[category.id] = false;
         }
@@ -127,28 +193,6 @@ const Projects = () => {
     fetchCategoryImages();
   }, []);
 
-  // Auto-rotate carousels
-  useEffect(() => {
-    const intervals: NodeJS.Timeout[] = [];
-
-    projectCategories.forEach((category) => {
-      const images = categoryImages[category.id] || [];
-      if (images.length > 1) {
-        const interval = setInterval(() => {
-          setCurrentImageIndexes((prev) => ({
-            ...prev,
-            [category.id]: (prev[category.id] + 1) % images.length,
-          }));
-        }, 4000); // 4 seconds per image
-        intervals.push(interval);
-      }
-    });
-
-    return () => {
-      intervals.forEach((interval) => clearInterval(interval));
-    };
-  }, [categoryImages]);
-
   // Handle URL parameter for category selection
   useEffect(() => {
     if (selectedCategoryFromUrl) {
@@ -157,6 +201,23 @@ const Projects = () => {
       setSelectedCategory(null);
     }
   }, [selectedCategoryFromUrl]);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Handle escape key to close image modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && selectedImage) {
+        setSelectedImage(null);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [selectedImage]);
 
   const nextImage = (categoryId: string) => {
     const images = categoryImages[categoryId] || [];
@@ -209,7 +270,7 @@ const Projects = () => {
           </div>
 
           {/* Gallery View */}
-          <div className="container-width">
+          <div className="container-width pb-24">
             <div className="text-center mb-8">
               <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
                 {category?.name} Gallery
@@ -219,8 +280,8 @@ const Projects = () => {
               </p>
             </div>
 
-            {/* Image Gallery */}
-            <div className="max-w-4xl mx-auto">
+            {/* Image Gallery Grid */}
+            <div className="max-w-6xl mx-auto">
               {isLoading ? (
                 <div className="flex justify-center items-center py-12">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -229,64 +290,30 @@ const Projects = () => {
                   </span>
                 </div>
               ) : images.length > 0 ? (
-                <div className="space-y-6">
-                  {/* Main Image */}
-                  <div className="relative rounded-lg overflow-hidden">
-                    <img
-                      src={images[currentIndex]?.url}
-                      alt={`${category?.name} - ${images[currentIndex]?.name}`}
-                      className="w-full h-96 object-cover"
-                    />
-
-                    {/* Navigation Controls */}
-                    {images.length > 1 && (
-                      <>
-                        <button
-                          onClick={() => prevImage(selectedCategory)}
-                          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
-                        >
-                          <ChevronLeft className="w-6 h-6" />
-                        </button>
-                        <button
-                          onClick={() => nextImage(selectedCategory)}
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
-                        >
-                          <ChevronRight className="w-6 h-6" />
-                        </button>
-                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded text-sm">
-                          {currentIndex + 1} / {images.length}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {images.map((image, index) => (
+                    <div
+                      key={image.id}
+                      className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
+                      onClick={() => setSelectedImage(image)}
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.name}
+                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <h3 className="text-white font-semibold text-lg mb-1">
+                            {image.name}
+                          </h3>
+                          <p className="text-white/80 text-sm">
+                            {category?.name} Project
+                          </p>
                         </div>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Thumbnail Grid */}
-                  {images.length > 1 && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                      {images.map((image, index) => (
-                        <button
-                          key={image.id}
-                          onClick={() =>
-                            setCurrentImageIndexes((prev) => ({
-                              ...prev,
-                              [selectedCategory]: index,
-                            }))
-                          }
-                          className={`relative rounded overflow-hidden transition-opacity ${
-                            index === currentIndex
-                              ? "opacity-100 ring-2 ring-primary"
-                              : "opacity-70 hover:opacity-100"
-                          }`}
-                        >
-                          <img
-                            src={image.url}
-                            alt={image.name}
-                            className="w-full h-20 object-cover"
-                          />
-                        </button>
-                      ))}
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               ) : (
                 <div className="text-center py-12">
@@ -298,6 +325,48 @@ const Projects = () => {
               )}
             </div>
           </div>
+
+          {/* Image Modal/Lightbox */}
+          {selectedImage && (
+            <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+              <div className="relative max-w-7xl max-h-full">
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedImage(null)}
+                  className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+
+                {/* Image */}
+                <img
+                  src={selectedImage.url}
+                  alt={selectedImage.name}
+                  className="max-w-full max-h-[90vh] object-contain rounded-lg"
+                />
+
+                {/* Image Info */}
+                <div className="absolute bottom-4 left-4 right-4 bg-black/50 text-white p-4 rounded-lg">
+                  <h3 className="text-xl font-semibold mb-1">
+                    {selectedImage.name}
+                  </h3>
+                  <p className="text-white/80">{category?.name} Project</p>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
         <Footer />
       </div>
@@ -326,7 +395,7 @@ const Projects = () => {
         </section>
 
         {/* Project Categories */}
-        <section className="section-padding">
+        <section className="section-padding pb-24">
           <div className="container-width">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projectCategories.map((category) => {
@@ -446,11 +515,20 @@ const Projects = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
-                asChild
                 size="lg"
                 className="bg-white text-primary hover:bg-gray-100"
+                onClick={() => {
+                  navigate("/#contact");
+                  // Scroll to contact section after navigation
+                  setTimeout(() => {
+                    const contactSection = document.getElementById("contact");
+                    if (contactSection) {
+                      contactSection.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }, 100);
+                }}
               >
-                <Link to="/#contact">Get Free Quote</Link>
+                Get Free Quote
               </Button>
               <Button
                 size="lg"

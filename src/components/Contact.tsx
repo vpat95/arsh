@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import emailjs from "@emailjs/browser";
 import { useState } from "react";
 
 const Contact = () => {
@@ -28,28 +29,21 @@ const Contact = () => {
     setSubmitStatus({ type: null, message: "" });
 
     try {
-      // For now, let's use a simple approach that logs the data
-      // This will help us test the form while you set up EmailJS
-      const emailData = {
-        to: "arsh.c.contractors@gmail.com",
-        from: formData.email,
-        subject: "New Estimate Request - Arsh Contractors",
-        message: `New Estimate Request from Arsh Contractors Website
+      // Send email using EmailJS
+      const result = await emailjs.send(
+        "service_a46cfxb", // Service ID
+        "template_qb7657t", // Template ID
+        {
+          from_name: `${formData.firstName} ${formData.lastName}`,
+          from_email: formData.email,
+          phone: formData.phone,
+          project_details: formData.projectDetails || "No details provided",
+          submitted_date: new Date().toLocaleString(),
+        },
+        "pDBy9Hw3hgvjf31up" // Public Key
+      );
 
-Name: ${formData.firstName} ${formData.lastName}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Project Details: ${formData.projectDetails || "No details provided"}
-
-Submitted on: ${new Date().toLocaleString()}`,
-      };
-
-      // Log the email data for now
-      console.log("Email data that would be sent:", emailData);
-
-      // Simulate successful submission
-      // TODO: Replace this with actual EmailJS implementation
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
+      console.log("Email sent successfully:", result);
 
       setSubmitStatus({
         type: "success",
