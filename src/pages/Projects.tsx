@@ -352,21 +352,6 @@ const Projects = () => {
                         loading="lazy"
                         decoding="async"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <h3 className="text-white font-semibold text-lg mb-1">
-                            {image.name}
-                          </h3>
-                          <p className="text-white/80 text-sm">
-                            {category?.name} Project
-                          </p>
-                          {image.createdTime && (
-                            <p className="text-white/60 text-xs mt-1">
-                              {new Date(image.createdTime).toLocaleDateString()}
-                            </p>
-                          )}
-                        </div>
-                      </div>
                     </div>
                   ))}
                 </div>
@@ -417,20 +402,6 @@ const Projects = () => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
-
-                {/* Image Info */}
-                <div className="absolute bottom-4 left-4 right-4 bg-black/50 text-white p-4 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-1">
-                    {selectedImage.name}
-                  </h3>
-                  <p className="text-white/80">{category?.name} Project</p>
-                  {selectedImage.createdTime && (
-                    <p className="text-white/60 text-sm mt-1">
-                      Created:{" "}
-                      {new Date(selectedImage.createdTime).toLocaleDateString()}
-                    </p>
-                  )}
-                </div>
               </div>
             </div>
           )}
