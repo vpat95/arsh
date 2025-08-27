@@ -116,8 +116,8 @@ const Header = () => {
 
             {/* CTA and Mobile Menu */}
             <div className="flex items-center space-x-4">
-              {/* Social Media Links */}
-              <div className="hidden sm:flex items-center space-x-2">
+              {/* Social Media Links - Visible on all screen sizes */}
+              <div className="flex items-center space-x-2">
                 <a
                   href="https://www.facebook.com/kusharsh/"
                   target="_blank"

@@ -36,9 +36,12 @@ const Contact = () => {
         {
           from_name: `${formData.firstName} ${formData.lastName}`,
           from_email: formData.email,
+          customer_name: `${formData.firstName} ${formData.lastName}`,
+          customer_email: formData.email,
           phone: formData.phone,
           project_details: formData.projectDetails || "No details provided",
           submitted_date: new Date().toLocaleString(),
+          subject: `New Estimate Request from ${formData.firstName} ${formData.lastName}`,
         },
         "pDBy9Hw3hgvjf31up" // Public Key
       );
@@ -69,6 +72,7 @@ const Contact = () => {
       setIsSubmitting(false);
     }
   };
+
   return (
     <section
       id="contact"

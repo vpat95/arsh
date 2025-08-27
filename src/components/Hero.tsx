@@ -1,5 +1,5 @@
-import testImage1 from "@/assets/test-images/IMG_3157.jpg";
-import testImage2 from "@/assets/test-images/IMG_3516.jpg";
+import homePlaceholder1 from "@/assets/home-placeholder/hp1.JPG";
+import homePlaceholder2 from "@/assets/home-placeholder/hp2.JPG";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -14,14 +14,14 @@ const Hero = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [images, setImages] = useState<ImageFile[]>([
     {
-      id: "test-1",
-      name: "Professional Construction Work",
-      url: testImage1,
+      id: "home-1",
+      name: "Professional Home Renovation",
+      url: homePlaceholder1,
     },
     {
-      id: "test-2",
-      name: "Quality Renovation Project",
-      url: testImage2,
+      id: "home-2",
+      name: "Quality Construction Work",
+      url: homePlaceholder2,
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -65,7 +65,7 @@ const Hero = () => {
 
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000); // 5 seconds
+    }, 3000); // 3 seconds
 
     return () => clearInterval(interval);
   }, [images.length]);
@@ -104,7 +104,7 @@ const Hero = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="w-5 h-5 text-contractor-gold" />
-                <span>20+ Years Experience</span>
+                <span>10+ Years Experience</span>
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="w-5 h-5 text-contractor-gold" />
@@ -117,7 +117,7 @@ const Hero = () => {
               <Button
                 variant="secondary"
                 size="xl"
-                className="contractor-button-shadow"
+                className="contractor-button-shadow w-full justify-center"
                 onClick={() => {
                   const contactSection = document.getElementById("contact");
                   if (contactSection) {
@@ -128,13 +128,17 @@ const Hero = () => {
                   }
                 }}
               >
-                Get Free Estimate
-                <ArrowRight className="w-5 h-5" />
+                <span>Get Free Estimate</span>
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <a href="tel:929-386-3248">
-                <Button variant="outline" size="xl">
-                  <Phone className="w-5 h-5" />
-                  Call Now: 929-386-3248
+              <a href="tel:929-386-3248" className="w-full sm:flex-1">
+                <Button
+                  variant="outline"
+                  size="xl"
+                  className="w-full justify-center"
+                >
+                  <Phone className="w-5 h-5 mr-2" />
+                  <span>Call Now: 929-386-3248</span>
                 </Button>
               </a>
             </div>

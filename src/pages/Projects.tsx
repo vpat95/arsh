@@ -8,12 +8,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Import default test images for each category
-import bathroomDefault from "@/assets/test-images/bathroom.JPG";
-import commercialDefault from "@/assets/test-images/commercial.JPG";
-import exteriorDefault from "@/assets/test-images/exterior.JPG";
-import flooringDefault from "@/assets/test-images/flooring.JPG";
-import handymanDefault from "@/assets/test-images/handyman.JPG";
-import kitchenDefault from "@/assets/test-images/kitchen.JPG";
+import bathroomDefault from "@/assets/bathroom.JPG";
+import commercialDefault from "@/assets/commercial.JPG";
+import exteriorDefault from "@/assets/exterior.JPG";
+import flooringDefault from "@/assets/flooring.JPG";
+import handymanDefault from "@/assets/handyman.JPG";
+import kitchenDefault from "@/assets/kitchen.JPG";
 
 interface ImageFile {
   id: string;
