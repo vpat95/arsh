@@ -19,6 +19,8 @@ interface ImageFile {
   id: string;
   name: string;
   url: string;
+  createdTime?: string; // Google Drive file creation date
+  modifiedTime?: string; // Google Drive file modification date
 }
 
 interface ProjectCategory {
@@ -27,6 +29,23 @@ interface ProjectCategory {
   description: string;
   icon: string;
 }
+
+// Function to sort images by date (newest first)
+const sortImagesByDate = (images: ImageFile[]): ImageFile[] => {
+  return [...images].sort((a, b) => {
+    // If both images have dates, sort by date
+    if (a.createdTime && b.createdTime) {
+      return (
+        new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime()
+      );
+    }
+    // If only one has a date, prioritize the one with date
+    if (a.createdTime && !b.createdTime) return -1;
+    if (!a.createdTime && b.createdTime) return 1;
+    // If neither has a date, maintain original order
+    return 0;
+  });
+};
 
 const projectCategories: ProjectCategory[] = [
   {
@@ -164,7 +183,7 @@ const Projects = () => {
   // Cache loaded images
   const cacheImage = (url: string) => {
     if (!imageCache[url]) {
-      setImageCache(prev => ({ ...prev, [url]: url }));
+      setImageCache((prev) => ({ ...prev, [url]: url }));
     }
   };
 
@@ -199,11 +218,12 @@ const Projects = () => {
               fetchedImages
             );
 
-            // Combine default images with fetched images
-            newCategoryImages[category.id] = [
+            // Combine default images with fetched images and sort by date
+            const combinedImages = [
               ...defaultImages[category.id],
               ...fetchedImages,
             ];
+            newCategoryImages[category.id] = sortImagesByDate(combinedImages);
 
             // Preload all images for this category
             fetchedImages.forEach((image) => {
@@ -327,7 +347,7 @@ const Projects = () => {
                         onError={(e) => {
                           console.warn(`Failed to load image: ${image.url}`);
                           // Fallback to a placeholder or retry
-                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.style.display = "none";
                         }}
                         loading="lazy"
                         decoding="async"
@@ -340,6 +360,11 @@ const Projects = () => {
                           <p className="text-white/80 text-sm">
                             {category?.name} Project
                           </p>
+                          {image.createdTime && (
+                            <p className="text-white/60 text-xs mt-1">
+                              {new Date(image.createdTime).toLocaleDateString()}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -386,8 +411,10 @@ const Projects = () => {
                   alt={selectedImage.name}
                   className="max-w-full max-h-[90vh] object-contain rounded-lg"
                   onError={(e) => {
-                    console.warn(`Failed to load modal image: ${selectedImage.url}`);
-                    e.currentTarget.style.display = 'none';
+                    console.warn(
+                      `Failed to load modal image: ${selectedImage.url}`
+                    );
+                    e.currentTarget.style.display = "none";
                   }}
                 />
 
@@ -397,6 +424,12 @@ const Projects = () => {
                     {selectedImage.name}
                   </h3>
                   <p className="text-white/80">{category?.name} Project</p>
+                  {selectedImage.createdTime && (
+                    <p className="text-white/60 text-sm mt-1">
+                      Created:{" "}
+                      {new Date(selectedImage.createdTime).toLocaleDateString()}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
