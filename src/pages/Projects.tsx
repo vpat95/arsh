@@ -107,6 +107,7 @@ const Projects = () => {
   const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
     new Set()
   );
+  const [currentModalIndex, setCurrentModalIndex] = useState<number>(0);
 
   // Initialize current image indexes for each category
   useEffect(() => {
@@ -263,17 +264,62 @@ const Projects = () => {
     window.scrollTo(0, 0);
   }, [selectedCategory]);
 
-  // Handle escape key to close image modal
+  // Handle keyboard navigation for image modal
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && selectedImage) {
-        setSelectedImage(null);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedImage) {
+        if (e.key === "Escape") {
+          setSelectedImage(null);
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          goToNextImage();
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          goToPreviousImage();
+        }
       }
     };
 
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [selectedImage]);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImage, selectedCategory, categoryImages]);
+
+  // Navigation functions for modal
+  const goToNextImage = () => {
+    if (selectedCategory && selectedImage) {
+      const images = categoryImages[selectedCategory] || [];
+      const currentIndex = images.findIndex(
+        (img) => img.id === selectedImage.id
+      );
+      if (currentIndex < images.length - 1) {
+        setSelectedImage(images[currentIndex + 1]);
+        setCurrentModalIndex(currentIndex + 1);
+      }
+    }
+  };
+
+  const goToPreviousImage = () => {
+    if (selectedCategory && selectedImage) {
+      const images = categoryImages[selectedCategory] || [];
+      const currentIndex = images.findIndex(
+        (img) => img.id === selectedImage.id
+      );
+      if (currentIndex > 0) {
+        setSelectedImage(images[currentIndex - 1]);
+        setCurrentModalIndex(currentIndex - 1);
+      }
+    }
+  };
+
+  // Handle image selection with index tracking
+  const handleImageSelect = (image: ImageFile) => {
+    if (selectedCategory) {
+      const images = categoryImages[selectedCategory] || [];
+      const index = images.findIndex((img) => img.id === image.id);
+      setSelectedImage(image);
+      setCurrentModalIndex(index);
+    }
+  };
 
   const handleViewProjects = (categoryId: string) => {
     setSelectedCategory(categoryId);
@@ -330,7 +376,7 @@ const Projects = () => {
                     <div
                       key={image.id}
                       className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
-                      onClick={() => setSelectedImage(image)}
+                      onClick={() => handleImageSelect(image)}
                     >
                       <img
                         src={image.url}
@@ -390,6 +436,58 @@ const Projects = () => {
                   </svg>
                 </button>
 
+                {/* Navigation Buttons */}
+                {selectedCategory && (
+                  <>
+                    {/* Previous Button */}
+                    {currentModalIndex > 0 && (
+                      <button
+                        onClick={goToPreviousImage}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                        aria-label="Previous image"
+                      >
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
+                        </svg>
+                      </button>
+                    )}
+
+                    {/* Next Button */}
+                    {currentModalIndex <
+                      (categoryImages[selectedCategory]?.length || 0) - 1 && (
+                      <button
+                        onClick={goToNextImage}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                        aria-label="Next image"
+                      >
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </>
+                )}
+
                 {/* Image */}
                 <img
                   src={selectedImage.url}
@@ -402,6 +500,14 @@ const Projects = () => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
+
+                {/* Image Counter */}
+                {selectedCategory && (
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-lg text-sm">
+                    {currentModalIndex + 1} of{" "}
+                    {categoryImages[selectedCategory]?.length || 0}
+                  </div>
+                )}
               </div>
             </div>
           )}
