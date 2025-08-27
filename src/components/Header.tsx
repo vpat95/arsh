@@ -2,10 +2,11 @@ import arshLogo from "@/assets/arsh_logo.webp";
 import { Button } from "@/components/ui/button";
 import { Facebook, Instagram, Menu, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Smooth scroll function for navigation links
@@ -27,6 +28,17 @@ const Header = () => {
     // Close mobile menu after navigation
     setIsMobileMenuOpen(false);
     // If not on homepage, let the default href behavior handle the navigation
+  };
+
+  // Handle Projects navigation
+  const handleProjectsNavigation = () => {
+    // If we're on the projects page with a category, navigate to main projects page
+    if (location.pathname === "/projects" && location.search) {
+      navigate("/projects");
+    } else {
+      navigate("/projects");
+    }
+    setIsMobileMenuOpen(false);
   };
 
   // Toggle mobile menu
@@ -99,12 +111,12 @@ const Header = () => {
               >
                 About
               </a>
-              <Link
-                to="/projects"
+              <button
+                onClick={handleProjectsNavigation}
                 className="text-foreground hover:text-primary transition-colors duration-200"
               >
                 Projects
-              </Link>
+              </button>
               <a
                 href="/#contact"
                 onClick={(e) => handleSmoothScroll(e, "contact")}
@@ -206,7 +218,7 @@ const Header = () => {
             </a>
             <Link
               to="/projects"
-              onClick={closeMobileMenu}
+              onClick={handleProjectsNavigation}
               className="block text-lg font-medium text-foreground hover:text-primary transition-colors duration-200 py-2"
             >
               Projects
