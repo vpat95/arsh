@@ -144,7 +144,7 @@ const Projects = () => {
     ],
   };
 
-  // Preload images for faster rendering
+  // Preload images for faster rendering with better error handling
   const preloadImage = (url: string) => {
     if (preloadedImages.has(url)) return;
 
@@ -152,7 +152,20 @@ const Projects = () => {
     img.onload = () => {
       setPreloadedImages((prev) => new Set(prev).add(url));
     };
+    img.onerror = () => {
+      console.warn(`Failed to preload image: ${url}`);
+    };
     img.src = url;
+  };
+
+  // Keep images in memory to prevent disappearing
+  const [imageCache, setImageCache] = useState<Record<string, string>>({});
+
+  // Cache loaded images
+  const cacheImage = (url: string) => {
+    if (!imageCache[url]) {
+      setImageCache(prev => ({ ...prev, [url]: url }));
+    }
   };
 
   // Fetch images for each category
@@ -195,6 +208,7 @@ const Projects = () => {
             // Preload all images for this category
             fetchedImages.forEach((image) => {
               preloadImage(image.url);
+              cacheImage(image.url);
             });
           } else {
             console.error(
@@ -306,7 +320,17 @@ const Projects = () => {
                             ? "animate-pulse bg-gray-200"
                             : ""
                         }`}
-                        onLoad={() => preloadImage(image.url)}
+                        onLoad={() => {
+                          preloadImage(image.url);
+                          cacheImage(image.url);
+                        }}
+                        onError={(e) => {
+                          console.warn(`Failed to load image: ${image.url}`);
+                          // Fallback to a placeholder or retry
+                          e.currentTarget.style.display = 'none';
+                        }}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="absolute bottom-4 left-4 right-4">
@@ -361,6 +385,10 @@ const Projects = () => {
                   src={selectedImage.url}
                   alt={selectedImage.name}
                   className="max-w-full max-h-[90vh] object-contain rounded-lg"
+                  onError={(e) => {
+                    console.warn(`Failed to load modal image: ${selectedImage.url}`);
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
 
                 {/* Image Info */}
