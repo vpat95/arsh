@@ -32,12 +32,8 @@ const Header = () => {
 
   // Handle Projects navigation
   const handleProjectsNavigation = () => {
-    // If we're on the projects page with a category, navigate to main projects page
-    if (location.pathname === "/projects" && location.search) {
-      navigate("/projects");
-    } else {
-      navigate("/projects");
-    }
+    // Always navigate to the main projects page, clearing any category parameters
+    navigate("/projects", { replace: true });
     setIsMobileMenuOpen(false);
   };
 

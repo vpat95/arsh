@@ -259,6 +259,11 @@ const Projects = () => {
     }
   }, [selectedCategoryFromUrl]);
 
+  // Clear selected image when category changes
+  useEffect(() => {
+    setSelectedImage(null);
+  }, [selectedCategory]);
+
   // Scroll to top when component mounts or when gallery opens
   useEffect(() => {
     window.scrollTo(0, 0);
