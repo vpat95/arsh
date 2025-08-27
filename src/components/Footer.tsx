@@ -1,5 +1,5 @@
 import arshLogo from "@/assets/arsh_logo.webp";
-import { Facebook, Instagram, MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -116,6 +116,15 @@ const Footer = () => {
                   className="hover:text-contractor-gold transition-colors"
                 >
                   929-386-3248
+                </a>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Mail className="w-4 h-4" />
+                <a
+                  href="mailto:info@arshcontractors.com?subject=Inquiry about your services&body=Hello,%0D%0A%0D%0AI'm interested in your renovation services. Could you please provide more information about your services and availability?%0D%0A%0D%0AThank you,%0D%0A[Your Name]"
+                  className="hover:text-contractor-gold transition-colors"
+                >
+                  info@arshcontractors.com
                 </a>
               </div>
               <div className="flex items-center space-x-2">
