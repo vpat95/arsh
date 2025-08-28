@@ -186,6 +186,17 @@ const Projects = () => {
     img.src = url;
   };
 
+  // Check if image is already cached/preloaded
+  const isImagePreloaded = (url: string) => {
+    // Check if we've already preloaded it in this session
+    if (preloadedImages.has(url)) return true;
+
+    // Check if it's in browser cache by creating a temporary image
+    const img = new Image();
+    img.src = url;
+    return img.complete;
+  };
+
   // Keep images in memory to prevent disappearing
   const [imageCache, setImageCache] = useState<Record<string, string>>({});
 
@@ -396,7 +407,8 @@ const Projects = () => {
                           src={image.url}
                           alt={image.name}
                           className={`w-full h-64 object-cover transition-all duration-1000 group-hover:scale-110 ${
-                            loadedImages.has(image.id)
+                            loadedImages.has(image.id) ||
+                            isImagePreloaded(image.url)
                               ? "blur-none"
                               : "blur-md scale-110"
                           }`}
@@ -410,7 +422,9 @@ const Projects = () => {
                             // Fallback to a placeholder or retry
                             e.currentTarget.style.display = "none";
                           }}
-                          loading="lazy"
+                          loading={
+                            isImagePreloaded(image.url) ? "eager" : "lazy"
+                          }
                           decoding="async"
                         />
                       </div>
