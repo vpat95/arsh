@@ -1,6 +1,7 @@
 import homePlaceholder1 from "@/assets/home-placeholder/hp1.JPG";
 import homePlaceholder2 from "@/assets/home-placeholder/hp2.JPG";
 import { Button } from "@/components/ui/button";
+import { useOptimizedImage } from "@/hooks/useOptimizedImage";
 import { ArrowRight, CheckCircle, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -9,6 +10,44 @@ interface ImageFile {
   name: string;
   url: string;
 }
+
+interface HeroOptimizedImageProps {
+  image: ImageFile;
+  index: number;
+  currentImageIndex: number;
+  loadedImages: Set<string>;
+  onLoad: () => void;
+}
+
+const HeroOptimizedImage = ({
+  image,
+  index,
+  currentImageIndex,
+  loadedImages,
+  onLoad,
+}: HeroOptimizedImageProps) => {
+  const { optimizedUrl } = useOptimizedImage(image.url, {
+    width: 1200,
+    quality: 85,
+  });
+
+  return (
+    <div className="absolute inset-0">
+      <img
+        src={optimizedUrl || image.url}
+        alt={`Professional home renovation and construction work - ${image.name}`}
+        className={`absolute inset-0 w-full h-full object-cover rounded-xl transition-all duration-1000 ${
+          loadedImages.has(image.id) ? "blur-none" : "blur-md scale-110"
+        } ${index === currentImageIndex ? "opacity-100" : "opacity-0"}`}
+        onLoad={onLoad}
+        onError={(e) => {
+          console.warn(`Failed to load optimized hero image: ${image.url}`);
+          e.currentTarget.src = image.url;
+        }}
+      />
+    </div>
+  );
+};
 
 const Hero = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -157,23 +196,14 @@ const Hero = () => {
                 {images.length > 0 ? (
                   <>
                     {images.map((image, index) => (
-                      <div key={image.id} className="absolute inset-0">
-                        {/* Blurred loading state */}
-                        <img
-                          src={image.url}
-                          alt={`Professional home renovation and construction work - ${image.name}`}
-                          className={`absolute inset-0 w-full h-full object-cover rounded-xl transition-all duration-1000 ${
-                            loadedImages.has(image.id)
-                              ? "blur-none"
-                              : "blur-md scale-110"
-                          } ${
-                            index === currentImageIndex
-                              ? "opacity-100"
-                              : "opacity-0"
-                          }`}
-                          onLoad={() => handleImageLoad(image.id)}
-                        />
-                      </div>
+                      <HeroOptimizedImage
+                        key={image.id}
+                        image={image}
+                        index={index}
+                        currentImageIndex={currentImageIndex}
+                        loadedImages={loadedImages}
+                        onLoad={() => handleImageLoad(image.id)}
+                      />
                     ))}
 
                     {/* Carousel Indicators */}

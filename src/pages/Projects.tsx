@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import OptimizedImage from "@/components/OptimizedImage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -405,36 +406,16 @@ const Projects = () => {
                       className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
                       onClick={() => handleImageSelect(image)}
                     >
-                      <div className="relative w-full h-64 overflow-hidden">
-                        <img
-                          src={image.url}
-                          alt={image.name}
-                          className={`w-full h-64 object-cover transition-all duration-1000 group-hover:scale-110 ${
-                            loadedImages.has(image.id) ||
-                            isImagePreloaded(image.url) ||
-                            image.url.includes("assets/")
-                              ? "blur-none"
-                              : "blur-md scale-110"
-                          }`}
-                          onLoad={() => {
-                            handleImageLoad(image.id);
-                            preloadImage(image.url);
-                            cacheImage(image.url);
-                          }}
-                          onError={(e) => {
-                            console.warn(`Failed to load image: ${image.url}`);
-                            // Fallback to a placeholder or retry
-                            e.currentTarget.style.display = "none";
-                          }}
-                          loading={
-                            image.url.includes("assets/") ||
-                            isImagePreloaded(image.url)
-                              ? "eager"
-                              : "lazy"
-                          }
-                          decoding="async"
-                        />
-                      </div>
+                      <OptimizedImage
+                        image={image}
+                        onLoad={() => {
+                          handleImageLoad(image.id);
+                          preloadImage(image.url);
+                          cacheImage(image.url);
+                        }}
+                        loadedImages={loadedImages}
+                        isImagePreloaded={isImagePreloaded}
+                      />
                     </div>
                   ))}
                 </div>
@@ -527,21 +508,12 @@ const Projects = () => {
 
                 {/* Image */}
                 <div className="relative">
-                  <img
-                    src={selectedImage.url}
-                    alt={selectedImage.name}
-                    className={`max-w-full max-h-[90vh] object-contain rounded-lg transition-all duration-1000 ${
-                      loadedImages.has(selectedImage.id)
-                        ? "blur-none"
-                        : "blur-md scale-105"
-                    }`}
+                  <OptimizedImage
+                    image={selectedImage}
                     onLoad={() => handleImageLoad(selectedImage.id)}
-                    onError={(e) => {
-                      console.warn(
-                        `Failed to load modal image: ${selectedImage.url}`
-                      );
-                      e.currentTarget.style.display = "none";
-                    }}
+                    loadedImages={loadedImages}
+                    isImagePreloaded={isImagePreloaded}
+                    className="max-w-full max-h-[90vh] object-contain rounded-lg transition-all duration-1000"
                   />
                 </div>
 
