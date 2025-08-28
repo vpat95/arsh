@@ -191,10 +191,13 @@ const Projects = () => {
     // Check if we've already preloaded it in this session
     if (preloadedImages.has(url)) return true;
 
-    // Check if it's in browser cache by creating a temporary image
-    const img = new Image();
-    img.src = url;
-    return img.complete;
+    // For local images (imported assets), they should be instantly available
+    if (url.includes("assets/") || url.startsWith("/src/")) {
+      return true;
+    }
+
+    // For external images, check if they're in our preloaded set
+    return false;
   };
 
   // Keep images in memory to prevent disappearing
@@ -408,7 +411,8 @@ const Projects = () => {
                           alt={image.name}
                           className={`w-full h-64 object-cover transition-all duration-1000 group-hover:scale-110 ${
                             loadedImages.has(image.id) ||
-                            isImagePreloaded(image.url)
+                            isImagePreloaded(image.url) ||
+                            image.url.includes("assets/")
                               ? "blur-none"
                               : "blur-md scale-110"
                           }`}
@@ -423,7 +427,10 @@ const Projects = () => {
                             e.currentTarget.style.display = "none";
                           }}
                           loading={
-                            isImagePreloaded(image.url) ? "eager" : "lazy"
+                            image.url.includes("assets/") ||
+                            isImagePreloaded(image.url)
+                              ? "eager"
+                              : "lazy"
                           }
                           decoding="async"
                         />

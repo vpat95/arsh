@@ -25,6 +25,11 @@ const ProjectImagePreloader = () => {
 
   // Preload a single image
   const preloadImage = (url: string) => {
+    // Skip local images as they don't need preloading
+    if (url.includes("assets/") || url.startsWith("/src/")) {
+      return;
+    }
+
     if (preloadedImages.has(url)) return;
 
     const img = new Image();
