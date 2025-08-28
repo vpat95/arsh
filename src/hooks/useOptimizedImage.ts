@@ -28,6 +28,14 @@ export const useOptimizedImage = (originalUrl: string, options: {
 
   useEffect(() => {
     if (originalUrl) {
+      // For local images, use them directly without optimization
+      if (originalUrl.includes("assets/") || originalUrl.startsWith("/src/")) {
+        setOptimizedUrl(originalUrl);
+        setIsLoading(false);
+        return;
+      }
+
+      // For external images, use optimization
       const format = getBestFormat();
       const optimizedUrl = getOptimizedImageUrl(originalUrl, {
         ...options,

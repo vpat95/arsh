@@ -23,17 +23,16 @@ const OptimizedImage = ({
   isImagePreloaded,
   className = "w-full h-64 object-cover transition-all duration-1000 group-hover:scale-110",
 }: OptimizedImageProps) => {
+  const isLocalImage = image.url.includes("assets/");
   const { optimizedUrl } = useOptimizedImage(image.url, {
     width: 800,
     quality: 80,
   });
 
   const shouldShowBlur = !(
-    (
-      loadedImages.has(image.id) ||
-      isImagePreloaded(image.url) ||
-      image.url.includes("assets/")
-    ) // Local images don't need blur
+    loadedImages.has(image.id) ||
+    isImagePreloaded(image.url) ||
+    isLocalImage
   );
 
   // Debug logging for mobile blur state
@@ -42,8 +41,9 @@ const OptimizedImage = ({
       shouldShowBlur,
       isLoaded: loadedImages.has(image.id),
       isPreloaded: isImagePreloaded(image.url),
-      isLocal: image.url.includes("assets/"),
+      isLocal: isLocalImage,
       optimizedUrl: !!optimizedUrl,
+      directUrl: isLocalImage ? "Using direct URL" : "Using optimized URL",
     });
   }
 
@@ -78,11 +78,7 @@ const OptimizedImage = ({
             e.currentTarget.parentElement?.appendChild(placeholder);
           }
         }}
-        loading={
-          image.url.includes("assets/") || isImagePreloaded(image.url)
-            ? "eager"
-            : "lazy"
-        }
+        loading={isLocalImage ? "eager" : "lazy"}
         decoding="async"
       />
     </div>

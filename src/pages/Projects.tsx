@@ -194,6 +194,10 @@ const Projects = () => {
 
     // For local images (imported assets), they should be instantly available
     if (url.includes("assets/") || url.startsWith("/src/")) {
+      // Mark local images as preloaded immediately
+      if (!preloadedImages.has(url)) {
+        setPreloadedImages((prev) => new Set(prev).add(url));
+      }
       return true;
     }
 
