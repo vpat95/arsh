@@ -23,7 +23,7 @@ const OptimizedImage = ({
   isImagePreloaded,
   className = "w-full h-64 object-cover transition-all duration-1000 group-hover:scale-110",
 }: OptimizedImageProps) => {
-  const { optimizedUrl, isLoading } = useOptimizedImage(image.url, {
+  const { optimizedUrl } = useOptimizedImage(image.url, {
     width: 800,
     quality: 80,
   });
@@ -31,9 +31,19 @@ const OptimizedImage = ({
   const shouldShowBlur = !(
     loadedImages.has(image.id) ||
     isImagePreloaded(image.url) ||
-    image.url.includes("assets/") ||
-    !isLoading
+    image.url.includes("assets/") // Local images don't need blur
   );
+
+  // Debug logging for mobile blur state
+  if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+    console.log(`Mobile image ${image.id}:`, {
+      shouldShowBlur,
+      isLoaded: loadedImages.has(image.id),
+      isPreloaded: isImagePreloaded(image.url),
+      isLocal: image.url.includes("assets/"),
+      optimizedUrl: !!optimizedUrl
+    });
+  }
 
   return (
     <div className="relative w-full h-64 overflow-hidden">
