@@ -28,7 +28,7 @@ const services = [
     services: [
       { name: "Drywall / Plaster / Spackling", icon: Square },
       { name: "Painting", icon: Paintbrush },
-      { name: "Light Framing", icon: Hammer },
+      { name: "Framing", icon: Hammer },
       { name: "Doors (Interior & Exterior)", icon: DoorOpen },
       { name: "Flooring", icon: Square },
       { name: "Tiles", icon: Square },

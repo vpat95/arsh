@@ -12,7 +12,7 @@ const stats = [
   {
     icon: Award,
     label: "Years Experience",
-    value: "20+",
+    value: "10+",
     color: "text-contractor-gold",
   },
   {
