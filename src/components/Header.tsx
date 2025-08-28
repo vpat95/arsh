@@ -16,10 +16,18 @@ const Header = () => {
     e: React.MouseEvent<HTMLAnchorElement>,
     targetId: string
   ) => {
-    // Only handle smooth scroll if we're on the homepage
-    if (location.pathname === "/") {
-      e.preventDefault();
+    e.preventDefault();
+    console.log("handleSmoothScroll called with targetId:", targetId); // Debug log
+    console.log("Current pathname:", location.pathname); // Debug log
+
+    // If we're not on the homepage, navigate there first with hash
+    if (location.pathname !== "/") {
+      console.log("Navigating to:", `/#${targetId}`); // Debug log
+      navigate(`/#${targetId}`);
+    } else {
+      // If we're already on the homepage, scroll to the target
       const targetElement = document.getElementById(targetId);
+      console.log("Target element found (direct):", !!targetElement); // Debug log
       if (targetElement) {
         targetElement.scrollIntoView({
           behavior: "smooth",
@@ -27,9 +35,19 @@ const Header = () => {
         });
       }
     }
+
     // Close mobile menu after navigation
     setIsMobileMenuOpen(false);
-    // If not on homepage, let the default href behavior handle the navigation
+  };
+
+  // Handle logo click - always go to homepage top
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    navigate("/");
+    // Scroll to top after navigation
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
   };
 
   // Handle Projects navigation
@@ -66,6 +84,80 @@ const Header = () => {
     };
   }, [isMobileMenuOpen]);
 
+  // Handle hash navigation when navigating from another page
+  useEffect(() => {
+    if (location.pathname === "/" && location.hash) {
+      const targetId = location.hash.substring(1); // Remove the # from the hash
+      console.log("Attempting to scroll to:", targetId); // Debug log
+
+      // Special handling for About section due to Elfsight widget loading
+      const isAboutSection = targetId === "about";
+
+      // Function to scroll to target
+      const scrollToTarget = () => {
+        const targetElement = document.getElementById(targetId);
+        console.log("Scrolling to target element:", !!targetElement); // Debug log
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+          return true;
+        }
+        return false;
+      };
+
+      // If it's the About section, wait for Elfsight widget to load
+      if (isAboutSection) {
+        // Check if Elfsight widget is already loaded
+        const elfsightWidget = document.querySelector(
+          ".elfsight-app-ff572c65-3037-4b9a-8aac-b135cb9612ca"
+        );
+        const isElfsightLoaded =
+          elfsightWidget && !elfsightWidget.classList.contains("opacity-0");
+
+        if (isElfsightLoaded) {
+          // Widget already loaded, scroll immediately
+          setTimeout(scrollToTarget, 100);
+        } else {
+          // Wait for Elfsight widget to load
+          const handleElfsightLoaded = () => {
+            console.log("Elfsight widget loaded, scrolling to About section");
+            setTimeout(scrollToTarget, 200);
+            window.removeEventListener(
+              "elfsightWidgetLoaded",
+              handleElfsightLoaded
+            );
+          };
+
+          window.addEventListener("elfsightWidgetLoaded", handleElfsightLoaded);
+
+          // Fallback: scroll anyway after 3 seconds
+          setTimeout(() => {
+            window.removeEventListener(
+              "elfsightWidgetLoaded",
+              handleElfsightLoaded
+            );
+            scrollToTarget();
+          }, 3000);
+        }
+      } else {
+        // For other sections, use normal timing
+        const tryScroll = (delay: number) => {
+          setTimeout(() => {
+            if (!scrollToTarget() && delay < 2000) {
+              tryScroll(delay + 200);
+            }
+          }, delay);
+        };
+
+        tryScroll(500);
+        tryScroll(1000);
+        tryScroll(1500);
+      }
+    }
+  }, [location.hash, location.pathname]);
+
   // Close mobile menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -88,13 +180,13 @@ const Header = () => {
       <header className="bg-background/95 backdrop-blur-sm border-b sticky top-0 z-50">
         <div className="container-width">
           <div className="flex items-center justify-between py-4">
-            <Link to="/" className="flex items-center">
+            <a href="/" onClick={handleLogoClick} className="flex items-center">
               <img
                 src={arshLogo}
                 alt="Arsh Consultancy & Contractors Logo"
                 className="h-16 w-auto"
               />
-            </Link>
+            </a>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
@@ -190,11 +282,13 @@ const Header = () => {
           {/* Mobile Menu Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center">
-              <img
-                src={arshLogo}
-                alt="Arsh Consultancy & Contractors Logo"
-                className="h-14 w-auto"
-              />
+              <a href="/" onClick={handleLogoClick}>
+                <img
+                  src={arshLogo}
+                  alt="Arsh Consultancy & Contractors Logo"
+                  className="h-14 w-auto"
+                />
+              </a>
             </div>
             <Button variant="ghost" size="icon" onClick={closeMobileMenu}>
               <X className="w-5 h-5" />

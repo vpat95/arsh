@@ -32,6 +32,8 @@ const ElfsightReviews = () => {
     // Listen for script load completion
     script.onload = () => {
       setIsLoading(false);
+      // Dispatch custom event when Elfsight widget is loaded
+      window.dispatchEvent(new CustomEvent("elfsightWidgetLoaded"));
     };
 
     script.onerror = () => {
