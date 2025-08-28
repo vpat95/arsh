@@ -37,46 +37,75 @@ const ProjectImagePreloader = () => {
     img.src = url;
   };
 
-  // Preload all project images
+  // Preload all images with homepage priority
   useEffect(() => {
-    const preloadProjectImages = async () => {
+    const preloadAllImages = async () => {
       if (isPreloading) return;
       setIsPreloading(true);
 
-      console.log("Starting to preload project gallery images...");
+      console.log("Starting to preload images with homepage priority...");
 
-      // Fetch and preload images for each category
-      for (const category of projectCategories) {
-        try {
-          const response = await fetch(
-            import.meta.env.PROD
-              ? `https://arsh-theta.vercel.app/api/gallery/${category}`
-              : `/api/gallery/${category}`
-          );
+      // Step 1: Preload homepage images first (highest priority)
+      try {
+        console.log("Preloading homepage images...");
+        const homeResponse = await fetch(
+          import.meta.env.PROD
+            ? "https://arsh-theta.vercel.app/api/gallery/home"
+            : "/api/gallery/home"
+        );
 
-          if (response.ok) {
-            const data = await response.json();
-            const images = data.images || [];
+        if (homeResponse.ok) {
+          const homeData = await homeResponse.json();
+          const homeImages = homeData.images || [];
 
-            console.log(
-              `Preloading ${images.length} images for ${category} category`
-            );
+          console.log(`Preloading ${homeImages.length} homepage images`);
 
-            // Preload each image
-            images.forEach((image: ImageFile) => {
-              preloadImage(image.url);
-            });
-          }
-        } catch (error) {
-          console.warn(`Failed to preload ${category} images:`, error);
+          // Preload homepage images immediately
+          homeImages.forEach((image: ImageFile) => {
+            preloadImage(image.url);
+          });
         }
+      } catch (error) {
+        console.warn("Failed to preload homepage images:", error);
       }
 
-      setIsPreloading(false);
+      // Step 2: Wait a bit, then preload project images (lower priority)
+      setTimeout(async () => {
+        console.log("Starting to preload project gallery images...");
+
+        // Fetch and preload images for each category
+        for (const category of projectCategories) {
+          try {
+            const response = await fetch(
+              import.meta.env.PROD
+                ? `https://arsh-theta.vercel.app/api/gallery/${category}`
+                : `/api/gallery/${category}`
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              const images = data.images || [];
+
+              console.log(
+                `Preloading ${images.length} images for ${category} category`
+              );
+
+              // Preload each image
+              images.forEach((image: ImageFile) => {
+                preloadImage(image.url);
+              });
+            }
+          } catch (error) {
+            console.warn(`Failed to preload ${category} images:`, error);
+          }
+        }
+
+        setIsPreloading(false);
+      }, 1000); // Wait 1 second after homepage images before starting project images
     };
 
     // Start preloading after a short delay to not block initial page load
-    const timer = setTimeout(preloadProjectImages, 2000);
+    const timer = setTimeout(preloadAllImages, 1000); // Reduced from 2000ms to 1000ms
 
     return () => clearTimeout(timer);
   }, [isPreloading]);
