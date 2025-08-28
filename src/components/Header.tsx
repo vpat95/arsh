@@ -1,5 +1,6 @@
 import arshLogo from "@/assets/arsh_logo.webp";
 import { Button } from "@/components/ui/button";
+import { useProjectContext } from "@/contexts/ProjectContext";
 import { Facebook, Instagram, Menu, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -8,6 +9,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { clearSelectedCategory } = useProjectContext();
 
   // Smooth scroll function for navigation links
   const handleSmoothScroll = (
@@ -32,6 +34,9 @@ const Header = () => {
 
   // Handle Projects navigation
   const handleProjectsNavigation = () => {
+    // Clear the selected category state
+    clearSelectedCategory();
+
     // Always navigate to the main projects page, clearing any category parameters
     navigate("/projects", { replace: true });
     setIsMobileMenuOpen(false);
@@ -125,22 +130,22 @@ const Header = () => {
             {/* CTA and Mobile Menu */}
             <div className="flex items-center space-x-4">
               {/* Social Media Links - Visible on all screen sizes */}
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <a
                   href="https://www.facebook.com/kusharsh/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 text-muted-foreground hover:text-contractor-gold transition-colors"
+                  className="p-2 text-[#1877F2] hover:text-[#166FE5] hover:scale-110 transition-all duration-200"
                 >
-                  <Facebook className="w-4 h-4" />
+                  <Facebook className="w-6 h-6" />
                 </a>
                 <a
                   href="https://www.instagram.com/arsh.c.contractors.inc/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 text-muted-foreground hover:text-contractor-gold transition-colors"
+                  className="p-2 text-[#E4405F] hover:text-[#D63384] hover:scale-110 transition-all duration-200"
                 >
-                  <Instagram className="w-4 h-4" />
+                  <Instagram className="w-6 h-6" />
                 </a>
               </div>
 

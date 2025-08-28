@@ -25,6 +25,7 @@ const Hero = () => {
     },
   ]);
   const [loading, setLoading] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   // Fetch images from Google Drive and add them to existing test images
   useEffect(() => {
@@ -58,6 +59,11 @@ const Hero = () => {
 
     fetchHeroImages();
   }, []);
+
+  // Handle image load
+  const handleImageLoad = (imageId: string) => {
+    setLoadedImages((prev) => new Set(prev).add(imageId));
+  };
 
   // Auto-rotate carousel
   useEffect(() => {
@@ -151,16 +157,23 @@ const Hero = () => {
                 {images.length > 0 ? (
                   <>
                     {images.map((image, index) => (
-                      <img
-                        key={image.id}
-                        src={image.url}
-                        alt={`Professional home renovation and construction work - ${image.name}`}
-                        className={`absolute inset-0 w-full h-full object-cover rounded-xl transition-opacity duration-1000 ${
-                          index === currentImageIndex
-                            ? "opacity-100"
-                            : "opacity-0"
-                        }`}
-                      />
+                      <div key={image.id} className="absolute inset-0">
+                        {/* Blurred loading state */}
+                        <img
+                          src={image.url}
+                          alt={`Professional home renovation and construction work - ${image.name}`}
+                          className={`absolute inset-0 w-full h-full object-cover rounded-xl transition-all duration-1000 ${
+                            loadedImages.has(image.id)
+                              ? "blur-none"
+                              : "blur-md scale-110"
+                          } ${
+                            index === currentImageIndex
+                              ? "opacity-100"
+                              : "opacity-0"
+                          }`}
+                          onLoad={() => handleImageLoad(image.id)}
+                        />
+                      </div>
                     ))}
 
                     {/* Carousel Indicators */}
@@ -193,19 +206,21 @@ const Hero = () => {
                 )}
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Floating Stats Card */}
-            <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-lg border">
-              <div className="flex items-center space-x-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">200+</div>
-                  <div className="text-sm text-muted-foreground">Projects</div>
-                </div>
-                <div className="w-px h-12 bg-border"></div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">5★</div>
-                  <div className="text-sm text-muted-foreground">Rating</div>
-                </div>
+        {/* Stats Card - Centered at bottom of hero section */}
+        <div className="flex justify-center mt-8">
+          <div className="bg-white p-6 rounded-xl shadow-lg border">
+            <div className="flex items-center space-x-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-primary">200+</div>
+                <div className="text-sm text-muted-foreground">Projects</div>
+              </div>
+              <div className="w-px h-12 bg-border"></div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-primary">5★</div>
+                <div className="text-sm text-muted-foreground">Rating</div>
               </div>
             </div>
           </div>

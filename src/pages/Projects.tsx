@@ -3,9 +3,10 @@ import Header from "@/components/Header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useProjectContext } from "@/contexts/ProjectContext";
 import { ChevronLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 // Import default test images for each category
 import bathroomDefault from "@/assets/bathroom.JPG";
@@ -93,7 +94,9 @@ const projectCategories: ProjectCategory[] = [
 const Projects = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const selectedCategoryFromUrl = searchParams.get("category");
+  const { selectedCategory, setSelectedCategory } = useProjectContext();
 
   const [categoryImages, setCategoryImages] = useState<
     Record<string, ImageFile[]>
@@ -102,11 +105,11 @@ const Projects = () => {
     Record<string, number>
   >({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
   const [preloadedImages, setPreloadedImages] = useState<Set<string>>(
     new Set()
   );
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [currentModalIndex, setCurrentModalIndex] = useState<number>(0);
 
   // Initialize current image indexes for each category
@@ -162,6 +165,11 @@ const Projects = () => {
         url: flooringDefault,
       },
     ],
+  };
+
+  // Handle image load for blurred loading state
+  const handleImageLoad = (imageId: string) => {
+    setLoadedImages((prev) => new Set(prev).add(imageId));
   };
 
   // Preload images for faster rendering with better error handling
@@ -257,7 +265,7 @@ const Projects = () => {
     } else {
       setSelectedCategory(null);
     }
-  }, [selectedCategoryFromUrl]);
+  }, [selectedCategoryFromUrl, setSelectedCategory]);
 
   // Clear selected image when category changes
   useEffect(() => {
@@ -383,26 +391,29 @@ const Projects = () => {
                       className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
                       onClick={() => handleImageSelect(image)}
                     >
-                      <img
-                        src={image.url}
-                        alt={image.name}
-                        className={`w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110 ${
-                          !preloadedImages.has(image.url)
-                            ? "animate-pulse bg-gray-200"
-                            : ""
-                        }`}
-                        onLoad={() => {
-                          preloadImage(image.url);
-                          cacheImage(image.url);
-                        }}
-                        onError={(e) => {
-                          console.warn(`Failed to load image: ${image.url}`);
-                          // Fallback to a placeholder or retry
-                          e.currentTarget.style.display = "none";
-                        }}
-                        loading="lazy"
-                        decoding="async"
-                      />
+                      <div className="relative w-full h-64 overflow-hidden">
+                        <img
+                          src={image.url}
+                          alt={image.name}
+                          className={`w-full h-64 object-cover transition-all duration-1000 group-hover:scale-110 ${
+                            loadedImages.has(image.id)
+                              ? "blur-none"
+                              : "blur-md scale-110"
+                          }`}
+                          onLoad={() => {
+                            handleImageLoad(image.id);
+                            preloadImage(image.url);
+                            cacheImage(image.url);
+                          }}
+                          onError={(e) => {
+                            console.warn(`Failed to load image: ${image.url}`);
+                            // Fallback to a placeholder or retry
+                            e.currentTarget.style.display = "none";
+                          }}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -494,17 +505,24 @@ const Projects = () => {
                 )}
 
                 {/* Image */}
-                <img
-                  src={selectedImage.url}
-                  alt={selectedImage.name}
-                  className="max-w-full max-h-[90vh] object-contain rounded-lg"
-                  onError={(e) => {
-                    console.warn(
-                      `Failed to load modal image: ${selectedImage.url}`
-                    );
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
+                <div className="relative">
+                  <img
+                    src={selectedImage.url}
+                    alt={selectedImage.name}
+                    className={`max-w-full max-h-[90vh] object-contain rounded-lg transition-all duration-1000 ${
+                      loadedImages.has(selectedImage.id)
+                        ? "blur-none"
+                        : "blur-md scale-105"
+                    }`}
+                    onLoad={() => handleImageLoad(selectedImage.id)}
+                    onError={(e) => {
+                      console.warn(
+                        `Failed to load modal image: ${selectedImage.url}`
+                      );
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                </div>
 
                 {/* Image Counter */}
                 {selectedCategory && (
@@ -523,7 +541,10 @@ const Projects = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div
+      className="min-h-screen bg-background"
+      key={location.pathname + location.search}
+    >
       <Header />
       <main className="pt-8">
         {/* Hero Section */}
@@ -559,11 +580,22 @@ const Projects = () => {
                     className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-105"
                   >
                     {/* Default Image */}
-                    <div className="relative h-64 bg-gray-100">
+                    <div className="relative h-64 bg-gray-100 overflow-hidden">
                       <img
                         src={defaultImages[category.id]?.[0]?.url}
                         alt={`${category.name} - Default`}
-                        className="w-full h-full object-cover"
+                        className={`w-full h-full object-cover transition-all duration-1000 ${
+                          loadedImages.has(
+                            defaultImages[category.id]?.[0]?.id || ""
+                          )
+                            ? "blur-none"
+                            : "blur-md scale-110"
+                        }`}
+                        onLoad={() =>
+                          handleImageLoad(
+                            defaultImages[category.id]?.[0]?.id || ""
+                          )
+                        }
                       />
                     </div>
 

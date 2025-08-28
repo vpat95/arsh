@@ -52,11 +52,12 @@ const services = [
       { name: "Doors (Interior or Exterior)", icon: DoorOpen },
       { name: "Spray Painting", icon: Paintbrush },
       { name: "Fencing", icon: Fence },
-      { name: "Powerwashing / Lime Washing Brick", icon: Droplets },
+      { name: "Powerwashing / Brick Lime Washing", icon: Droplets },
       { name: "Roof Repairs", icon: Home },
       { name: "Chimney Repair", icon: Home },
       { name: "Stone Replacements", icon: Square },
       { name: "Steps Repair", icon: Square },
+      { name: "Awnings", icon: Square },
     ],
   },
   {

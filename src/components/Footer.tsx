@@ -29,17 +29,17 @@ const Footer = () => {
                 href="https://www.facebook.com/kusharsh/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-contractor-gold transition-colors"
+                className="text-[#1877F2] hover:text-[#166FE5] hover:scale-110 transition-all duration-200"
               >
-                <Facebook className="w-5 h-5" />
+                <Facebook className="w-7 h-7" />
               </a>
               <a
                 href="https://www.instagram.com/arsh.c.contractors.inc/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-contractor-gold transition-colors"
+                className="text-[#E4405F] hover:text-[#D63384] hover:scale-110 transition-all duration-200"
               >
-                <Instagram className="w-5 h-5" />
+                <Instagram className="w-7 h-7" />
               </a>
             </div>
           </div>
