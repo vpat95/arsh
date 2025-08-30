@@ -65,11 +65,12 @@ export default async function handler(req, res) {
       }
     }
 
-    // Optimize the image
+    // Optimize the image with automatic rotation based on EXIF orientation
     let optimizedImage;
 
     if (imageFormat === 'webp') {
       optimizedImage = await sharp(imageBuffer)
+        .rotate() // Automatically rotate based on EXIF orientation
         .resize(width, null, {
           withoutEnlargement: true,
           fit: 'inside'
@@ -81,6 +82,7 @@ export default async function handler(req, res) {
         .toBuffer();
     } else if (imageFormat === 'jpeg' || imageFormat === 'jpg') {
       optimizedImage = await sharp(imageBuffer)
+        .rotate() // Automatically rotate based on EXIF orientation
         .resize(width, null, {
           withoutEnlargement: true,
           fit: 'inside'
@@ -92,6 +94,7 @@ export default async function handler(req, res) {
         .toBuffer();
     } else {
       optimizedImage = await sharp(imageBuffer)
+        .rotate() // Automatically rotate based on EXIF orientation
         .resize(width, null, {
           withoutEnlargement: true,
           fit: 'inside'
