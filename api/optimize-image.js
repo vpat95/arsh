@@ -19,11 +19,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { url, w, q, format } = req.query;
+    const { url, w, q, format, v } = req.query;
     const imageUrl = url;
     const width = parseInt(w || '800');
     const quality = parseInt(q || '80');
     const imageFormat = format || 'webp';
+    const version = v || '1'; // Cache busting parameter
 
     if (!imageUrl) {
       return res.status(400).json({ error: 'Image URL is required' });
@@ -106,10 +107,11 @@ export default async function handler(req, res) {
         .toBuffer();
     }
 
-    // Set appropriate headers
+    // Set appropriate headers with cache busting
     res.setHeader('Content-Type', `image/${imageFormat}`);
-    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); // Cache for 1 year
+    res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours instead of 1 year
     res.setHeader('Vary', 'Accept'); // Vary by Accept header for format negotiation
+    res.setHeader('ETag', `"${version}-${Date.now()}"`); // Add ETag for cache busting
 
     // Send the optimized image
     res.send(optimizedImage);

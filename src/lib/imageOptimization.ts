@@ -20,12 +20,13 @@ export const getOptimizedImageUrl = (
   // Determine optimal width based on device
   const optimalWidth = mobile ? Math.min(width, 600) : width;
 
-  // Build the optimization URL
+  // Build the optimization URL with cache busting
   const params = new URLSearchParams({
     url: imagePath,
     w: optimalWidth.toString(),
     q: quality.toString(),
-    format
+    format,
+    v: '2' // Cache busting version - increment this when making changes
   });
 
   return `/api/optimize-image?${params.toString()}`;
