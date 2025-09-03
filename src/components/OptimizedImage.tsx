@@ -28,6 +28,7 @@ const OptimizedImage = ({
   const [displayUrl, setDisplayUrl] = useState<string>(image.url);
   const [isConverting, setIsConverting] = useState(false);
   const [conversionError, setConversionError] = useState<string | null>(null);
+  const [imageLoadError, setImageLoadError] = useState(false);
 
   const isLocalImage = image.url.includes("assets/");
   const hasConvertedHeic = displayUrl.includes("blob:") && isHeicFile(image);
@@ -123,6 +124,14 @@ const OptimizedImage = ({
     convertHeicIfNeeded();
   }, [image.url, image.name]);
 
+  // Clear error states when displayUrl changes (e.g., after successful conversion)
+  useEffect(() => {
+    if (displayUrl.includes("blob:")) {
+      setImageLoadError(false);
+      setConversionError(null);
+    }
+  }, [displayUrl]);
+
   const performConversion = async () => {
     const DEBUG = true;
     if (DEBUG) console.log("Starting HEIC conversion for:", image.name);
@@ -164,6 +173,8 @@ const OptimizedImage = ({
       const convertedBlobUrl = URL.createObjectURL(result.file);
       if (DEBUG) console.log("Conversion successful, setting display URL");
       setDisplayUrl(convertedBlobUrl);
+      setImageLoadError(false); // Clear any previous load errors
+      setConversionError(null); // Clear any conversion errors
 
       // Clean up the blob URL when component unmounts
       return () => URL.revokeObjectURL(convertedBlobUrl);
@@ -232,27 +243,17 @@ const OptimizedImage = ({
           className={`${className} ${
             shouldShowBlur ? "blur-md scale-110" : "blur-none"
           }`}
-          onLoad={onLoad}
+          onLoad={() => {
+            onLoad();
+            setImageLoadError(false); // Clear error state when image loads successfully
+          }}
           onError={(e) => {
-            console.warn(`Failed to load image: ${displayUrl}`);
-            // Fallback to original image
+            console.warn(`Failed to load image: ${e.currentTarget.src}`);
+            setImageLoadError(true);
+
+            // Fallback to original image if this isn't already the original
             if (e.currentTarget.src !== image.url) {
               e.currentTarget.src = image.url;
-            } else {
-              // If original also fails, show placeholder
-              e.currentTarget.style.display = "none";
-              const placeholder = document.createElement("div");
-              placeholder.className =
-                "absolute inset-0 bg-gray-200 flex items-center justify-center";
-              placeholder.innerHTML = `
-                <div class="text-center">
-                  <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mx-auto mb-2">
-                  <span class="text-xl">📷</span>
-                  </div>
-                  <p class="text-sm text-muted-foreground">Image unavailable</p>
-                </div>
-              `;
-              e.currentTarget.parentElement?.appendChild(placeholder);
             }
           }}
           loading={isLocalImage ? "eager" : "lazy"}
@@ -268,6 +269,18 @@ const OptimizedImage = ({
               <span className="text-xl">⚠️</span>
             </div>
             <p className="text-xs text-red-600">{conversionError}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Show image unavailable placeholder if needed */}
+      {imageLoadError && !isConverting && !hasConvertedHeic && (
+        <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mx-auto mb-2">
+              <span className="text-xl">📷</span>
+            </div>
+            <p className="text-sm text-muted-foreground">Image unavailable</p>
           </div>
         </div>
       )}
