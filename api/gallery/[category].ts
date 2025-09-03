@@ -25,7 +25,7 @@ const FOLDER_MAP = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Handle CORS
+  // Handle CORS - essential for mobile compatibility
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
