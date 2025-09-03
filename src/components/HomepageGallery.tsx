@@ -20,11 +20,7 @@ const HomepageGallery = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(
-          import.meta.env.PROD
-            ? "https://arsh-theta.vercel.app/api/gallery/home"
-            : "/api/gallery/home"
-        );
+        const response = await fetch("/api/gallery/home");
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);

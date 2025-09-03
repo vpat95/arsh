@@ -252,11 +252,7 @@ const Projects = () => {
       // Fetch images for each category and append to defaults
       for (const category of projectCategories) {
         try {
-          const response = await fetch(
-            import.meta.env.PROD
-              ? `https://arsh-theta.vercel.app/api/gallery/${category.id}`
-              : `/api/gallery/${category.id}`
-          );
+          const response = await fetch(`/api/gallery/${category.id}`);
 
           if (response.ok) {
             const data = await response.json();

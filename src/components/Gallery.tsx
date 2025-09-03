@@ -33,11 +33,7 @@ const Gallery = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(
-        import.meta.env.PROD
-          ? `https://arsh-theta.vercel.app/api/gallery/${category}`
-          : `/api/gallery/${category}`
-      );
+      const response = await fetch(`/api/gallery/${category}`);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);

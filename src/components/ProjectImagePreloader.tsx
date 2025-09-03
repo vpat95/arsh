@@ -53,11 +53,7 @@ const ProjectImagePreloader = () => {
       // Step 1: Preload homepage images first (highest priority)
       try {
         console.log("Preloading homepage images...");
-        const homeResponse = await fetch(
-          import.meta.env.PROD
-            ? "https://arsh-theta.vercel.app/api/gallery/home"
-            : "/api/gallery/home"
-        );
+        const homeResponse = await fetch("/api/gallery/home");
 
         if (homeResponse.ok) {
           const homeData = await homeResponse.json();
@@ -81,11 +77,7 @@ const ProjectImagePreloader = () => {
         // Fetch and preload images for each category
         for (const category of projectCategories) {
           try {
-            const response = await fetch(
-              import.meta.env.PROD
-                ? `https://arsh-theta.vercel.app/api/gallery/${category}`
-                : `/api/gallery/${category}`
-            );
+            const response = await fetch(`/api/gallery/${category}`);
 
             if (response.ok) {
               const data = await response.json();

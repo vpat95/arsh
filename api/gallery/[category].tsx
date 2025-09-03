@@ -26,8 +26,20 @@ const FOLDER_MAP = {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Handle CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // Handle CORS - specifically allow arshcontractors.com
+  const allowedOrigins = [
+    "https://www.arshcontractors.com",
+    "https://arshcontractors.com",
+    "https://arsh-theta.vercel.app",
+  ];
+
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS"
