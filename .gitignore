@@ -24,5 +24,7 @@ dist-ssr
 *.sw?
 .vercel
 
-# Compiled API routes (generated files)
-api/**/*.js
+
+
+# API compiled files
+src/api/**/*.js

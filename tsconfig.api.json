@@ -4,8 +4,8 @@
     "target": "ES2020",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "./api",
-    "rootDir": "./api",
+    "outDir": "./src/api",
+    "rootDir": "./src/api",
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -16,6 +16,6 @@
     "declaration": false,
     "noEmit": false
   },
-  "include": ["api/**/*"],
+  "include": ["src/api/**/*"],
   "exclude": ["node_modules", "dist"]
 }

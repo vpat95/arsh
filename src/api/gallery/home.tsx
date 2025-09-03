@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { google } from "googleapis";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+const handler = async (req: VercelRequest, res: VercelResponse) => {
   // Handle CORS - specifically allow arshcontractors.com
   const allowedOrigins = [
     "https://www.arshcontractors.com",
@@ -97,4 +97,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       total: 0,
     });
   }
-}
+};
+
+module.exports = handler;

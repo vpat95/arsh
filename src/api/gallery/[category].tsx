@@ -5,7 +5,6 @@ import { google } from "googleapis";
 const FOLDER_MAP = {
   // Homepage gallery (main gallery only)
   home: [process.env.GOOGLE_DRIVE_MAIN_GALLERY],
-
   // Projects page (all categories)
   all: [
     process.env.GOOGLE_DRIVE_KITCHEN_PROJECTS,
@@ -25,7 +24,7 @@ const FOLDER_MAP = {
   commercial: [process.env.GOOGLE_DRIVE_COMMERCIAL_PROJECTS],
 };
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+const handler = async (req: VercelRequest, res: VercelResponse) => {
   // Handle CORS - specifically allow arshcontractors.com
   const allowedOrigins = [
     "https://www.arshcontractors.com",
@@ -73,8 +72,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   });
 
   try {
-    const folderIds = FOLDER_MAP[categoryStr as keyof typeof FOLDER_MAP];
-
+    const folderIds = FOLDER_MAP[categoryStr];
     console.log("Folder IDs for category:", categoryStr, ":", folderIds);
 
     if (!folderIds || folderIds.length === 0) {
@@ -103,6 +101,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .filter(Boolean)
       .map((id) => `'${id}' in parents`)
       .join(" or ");
+
     const query = `(${folderQuery}) and mimeType contains 'image/' and not mimeType contains 'heic' and trashed = false`;
 
     const response = await drive.files.list({
@@ -127,20 +126,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log("Sample image URL:", images[0]?.url);
 
     res.status(200).json({ images, category: categoryStr });
-  } catch (err: any) {
-    console.error("Error fetching gallery:", err.message);
-    console.error("Full error:", err);
-    console.error("Category:", categoryStr);
-    console.error("Environment variables:", {
-      hasType: !!process.env.GOOGLE_TYPE,
-      hasProjectId: !!process.env.GOOGLE_PROJECT_ID,
-      hasClientEmail: !!process.env.GOOGLE_CLIENT_EMAIL,
-      hasFolderId: !!process.env.GOOGLE_DRIVE_MAIN_GALLERY,
-    });
+  } catch (error: any) {
+    console.error(`Error in ${categoryStr} gallery API:`, error);
+
     res.status(500).json({
-      error: "Failed to fetch images",
-      details: err.message,
+      success: false,
+      message: "Internal server error",
+      error: error.message || "Unknown error",
+      images: [],
       category: categoryStr,
     });
   }
-}
+};
+
+module.exports = handler;
