@@ -56,15 +56,18 @@ export const convertHeicToJpeg = async (file: File): Promise<ConversionResult> =
 /**
  * Checks if a file is a HEIC image
  */
-export const isHeicFile = (file: File): boolean => {
+export const isHeicFile = (file: File | { name: string; type?: string }): boolean => {
   const heicExtensions = ['.heic', '.heif'];
   const heicMimeTypes = ['image/heic', 'image/heif'];
   
-  return (
-    heicMimeTypes.includes(file.type) ||
-    heicExtensions.some(ext => 
-      file.name.toLowerCase().endsWith(ext)
-    )
+  // Check by MIME type first (for File objects)
+  if ('type' in file && file.type && heicMimeTypes.includes(file.type)) {
+    return true;
+  }
+  
+  // Check by file extension (for both File and ImageFile objects)
+  return heicExtensions.some(ext => 
+    file.name.toLowerCase().endsWith(ext)
   );
 };
 
