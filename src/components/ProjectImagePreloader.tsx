@@ -105,7 +105,7 @@ const ProjectImagePreloader = () => {
     const timer = setTimeout(preloadAllImages, 1000); // Reduced from 2000ms to 1000ms
 
     return () => clearTimeout(timer);
-  }, [isPreloading]);
+  }, []); // ✅ Empty dependency array - run only once on mount
 
   // This component doesn't render anything visible
   return null;
