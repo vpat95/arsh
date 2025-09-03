@@ -47,8 +47,16 @@ const OptimizedImage = ({
     });
   }
 
+  // Check if this is being used in a modal (no height constraint)
+  const isModalImage =
+    className.includes("max-h-full") && className.includes("w-auto");
+
   return (
-    <div className="relative w-full h-64 overflow-hidden">
+    <div
+      className={`relative ${
+        isModalImage ? "w-full h-full" : "w-full h-64"
+      } overflow-hidden`}
+    >
       <img
         src={optimizedUrl || image.url} // Fallback to original if optimization fails
         alt={image.name}
@@ -70,7 +78,7 @@ const OptimizedImage = ({
             placeholder.innerHTML = `
               <div class="text-center">
                 <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mx-auto mb-2">
-                  <span class="text-xl">📷</span>
+                <span class="text-xl">📷</span>
                 </div>
                 <p class="text-sm text-muted-foreground">Image unavailable</p>
               </div>

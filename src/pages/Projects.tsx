@@ -112,6 +112,7 @@ const Projects = () => {
   );
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [currentModalIndex, setCurrentModalIndex] = useState<number>(0);
+  const [modalImageLoading, setModalImageLoading] = useState(false);
 
   // Initialize current image indexes for each category
   useEffect(() => {
@@ -173,6 +174,12 @@ const Projects = () => {
     setLoadedImages((prev) => new Set(prev).add(imageId));
   };
 
+  // Handle modal image load
+  const handleModalImageLoad = (imageId: string) => {
+    setLoadedImages((prev) => new Set(prev).add(imageId));
+    setModalImageLoading(false);
+  };
+
   // Preload images for faster rendering with better error handling
   const preloadImage = (url: string) => {
     if (preloadedImages.has(url)) return;
@@ -204,6 +211,19 @@ const Projects = () => {
     // For external images, check if they're in our preloaded set
     return false;
   };
+
+  // Check if modal image is already loaded and reset loading state
+  useEffect(() => {
+    if (selectedImage && modalImageLoading) {
+      // If the image is already loaded or preloaded, immediately stop loading
+      if (
+        loadedImages.has(selectedImage.id) ||
+        isImagePreloaded(selectedImage.url)
+      ) {
+        setModalImageLoading(false);
+      }
+    }
+  }, [selectedImage, modalImageLoading, loadedImages, isImagePreloaded]);
 
   // Keep images in memory to prevent disappearing
   const [imageCache, setImageCache] = useState<Record<string, string>>({});
@@ -324,6 +344,7 @@ const Projects = () => {
         (img) => img.id === selectedImage.id
       );
       if (currentIndex < images.length - 1) {
+        setModalImageLoading(true);
         setSelectedImage(images[currentIndex + 1]);
         setCurrentModalIndex(currentIndex + 1);
       }
@@ -337,6 +358,7 @@ const Projects = () => {
         (img) => img.id === selectedImage.id
       );
       if (currentIndex > 0) {
+        setModalImageLoading(true);
         setSelectedImage(images[currentIndex - 1]);
         setCurrentModalIndex(currentIndex - 1);
       }
@@ -348,6 +370,7 @@ const Projects = () => {
     if (selectedCategory) {
       const images = categoryImages[selectedCategory] || [];
       const index = images.findIndex((img) => img.id === image.id);
+      setModalImageLoading(true);
       setSelectedImage(image);
       setCurrentModalIndex(index);
     }
@@ -436,11 +459,14 @@ const Projects = () => {
 
           {/* Image Modal/Lightbox */}
           {selectedImage && (
-            <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-              <div className="relative max-w-7xl max-h-full">
+            <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-8 animate-in fade-in-0 duration-300">
+              <div className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center animate-in zoom-in-95 duration-300">
                 {/* Close Button */}
                 <button
-                  onClick={() => setSelectedImage(null)}
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setModalImageLoading(false);
+                  }}
                   className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
                 >
                   <svg
@@ -511,14 +537,26 @@ const Projects = () => {
                 )}
 
                 {/* Image */}
-                <div className="relative">
-                  <OptimizedImage
-                    image={selectedImage}
-                    onLoad={() => handleImageLoad(selectedImage.id)}
-                    loadedImages={loadedImages}
-                    isImagePreloaded={isImagePreloaded}
-                    className="max-w-full max-h-[90vh] object-contain rounded-lg transition-all duration-1000"
-                  />
+                <div className="flex items-center justify-center w-full h-full">
+                  {modalImageLoading ? (
+                    <div className="flex flex-col items-center justify-center space-y-4 animate-in fade-in-0 duration-200">
+                      <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/20 border-t-white"></div>
+                      <p className="text-white/80 text-lg">Loading image...</p>
+                    </div>
+                  ) : (
+                    <div
+                      key={selectedImage.id}
+                      className="animate-in fade-in-0 duration-300"
+                    >
+                      <OptimizedImage
+                        image={selectedImage}
+                        onLoad={() => handleModalImageLoad(selectedImage.id)}
+                        loadedImages={loadedImages}
+                        isImagePreloaded={isImagePreloaded}
+                        className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg transition-all duration-1000 shadow-2xl"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Image Counter */}
