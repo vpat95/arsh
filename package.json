@@ -5,9 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "clean": "find src/api -name '*.js' -delete",
-    "build": "npm run clean && vite build && npm run build:api",
-    "build:api": "tsc --project tsconfig.api.json",
+    "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"

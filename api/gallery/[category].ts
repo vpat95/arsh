@@ -24,25 +24,10 @@ const FOLDER_MAP = {
   commercial: [process.env.GOOGLE_DRIVE_COMMERCIAL_PROJECTS],
 };
 
-const handler = async (req: VercelRequest, res: VercelResponse) => {
-  // Handle CORS - specifically allow arshcontractors.com
-  const allowedOrigins = [
-    "https://www.arshcontractors.com",
-    "https://arshcontractors.com",
-    "https://arsh-theta.vercel.app",
-  ];
-
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  } else {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-  }
-
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Handle CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   // Handle preflight requests
@@ -137,6 +122,4 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
       category: categoryStr,
     });
   }
-};
-
-module.exports = handler;
+}
