@@ -459,8 +459,17 @@ const Projects = () => {
 
           {/* Image Modal/Lightbox */}
           {selectedImage && (
-            <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-8 animate-in fade-in-0 duration-300">
-              <div className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center animate-in zoom-in-95 duration-300">
+            <div
+              className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-8 animate-in fade-in-0 duration-300"
+              onClick={() => {
+                setSelectedImage(null);
+                setModalImageLoading(false);
+              }}
+            >
+              <div
+                className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center animate-in zoom-in-95 duration-300"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {/* Close Button */}
                 <button
                   onClick={() => {
