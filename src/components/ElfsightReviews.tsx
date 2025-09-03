@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const ElfsightReviews = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [widgetLoaded, setWidgetLoaded] = useState(false);
+  const widgetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check if script is already loaded
@@ -13,6 +15,7 @@ const ElfsightReviews = () => {
     if (existingScript) {
       // Script already exists, just show the widget
       setIsLoading(false);
+      setWidgetLoaded(true);
       return;
     }
 
@@ -28,6 +31,7 @@ const ElfsightReviews = () => {
     // Listen for script load completion
     script.onload = () => {
       setIsLoading(false);
+      setWidgetLoaded(true);
       // Dispatch custom event when Elfsight widget is loaded
       window.dispatchEvent(new CustomEvent("elfsightWidgetLoaded"));
     };
@@ -51,6 +55,31 @@ const ElfsightReviews = () => {
       clearTimeout(timeout);
     };
   }, []);
+
+  // Monitor widget visibility
+  useEffect(() => {
+    if (!widgetLoaded) return;
+
+    const checkWidget = () => {
+      if (widgetRef.current) {
+        const widget = widgetRef.current;
+        const isVisible = widget.offsetHeight > 0 && widget.offsetWidth > 0;
+        
+        if (!isVisible && widgetLoaded) {
+          console.warn("Widget disappeared, attempting to restore...");
+          // Force a re-render
+          const newWidget = widget.cloneNode(true) as HTMLDivElement;
+          widget.parentNode?.replaceChild(newWidget, widget);
+          widgetRef.current = newWidget;
+        }
+      }
+    };
+
+    // Check every 5 seconds
+    const interval = setInterval(checkWidget, 5000);
+    
+    return () => clearInterval(interval);
+  }, [widgetLoaded]);
 
   return (
     <section className="pt-16 pb-24 bg-contractor-gray-light/30">
@@ -95,10 +124,10 @@ const ElfsightReviews = () => {
         {/* Elfsight Google Reviews Widget */}
         {!hasError && (
           <div
+            ref={widgetRef}
             className={`elfsight-app-ff572c65-3037-4b9a-8aac-b135cb9612ca ${
               isLoading ? "opacity-0" : "opacity-100"
             } transition-opacity duration-500`}
-            data-elfsight-app-lazy={!isLoading}
             style={{
               minHeight: "400px",
               width: "100%",
