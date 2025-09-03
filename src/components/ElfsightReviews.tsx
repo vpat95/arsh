@@ -16,19 +16,14 @@ const ElfsightReviews = () => {
       return;
     }
 
-    // Load the Elfsight platform script with higher priority
+    // Load the Elfsight platform script
     const script = document.createElement("script");
     script.src = "https://elfsightcdn.com/platform.js";
-    script.async = false; // Changed to false for faster loading
-    script.defer = false; // Ensure immediate execution
+    script.async = true;
+    script.defer = true;
 
-    // Add script to head with higher priority
-    const firstScript = document.head.querySelector("script");
-    if (firstScript) {
-      document.head.insertBefore(script, firstScript);
-    } else {
-      document.head.appendChild(script);
-    }
+    // Add script to head
+    document.head.appendChild(script);
 
     // Listen for script load completion
     script.onload = () => {
@@ -50,16 +45,10 @@ const ElfsightReviews = () => {
         setIsLoading(false);
         setHasError(true);
       }
-    }, 10000); // 10 second timeout
+    }, 15000); // 15 second timeout
 
     return () => {
       clearTimeout(timeout);
-      const scriptToRemove = document.querySelector(
-        'script[src="https://elfsightcdn.com/platform.js"]'
-      );
-      if (scriptToRemove) {
-        document.head.removeChild(scriptToRemove);
-      }
     };
   }, []);
 
@@ -110,6 +99,11 @@ const ElfsightReviews = () => {
               isLoading ? "opacity-0" : "opacity-100"
             } transition-opacity duration-500`}
             data-elfsight-app-lazy={!isLoading}
+            style={{
+              minHeight: "400px",
+              width: "100%",
+              maxWidth: "100%",
+            }}
           />
         )}
       </div>
