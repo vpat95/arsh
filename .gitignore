@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Compiled API routes (generated files)
+api/**/*.js

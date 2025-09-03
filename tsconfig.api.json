@@ -4,7 +4,7 @@
     "target": "ES2020",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "./dist/api",
+    "outDir": "./api",
     "rootDir": "./api",
     "allowJs": true,
     "esModuleInterop": true,
