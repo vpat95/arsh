@@ -176,7 +176,18 @@ const Hero = () => {
                 <span>Get Free Estimate</span>
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <a href="tel:929-386-3248" className="w-full sm:flex-1">
+              <a
+                href="#"
+                className="w-full sm:flex-1 block call-button-mobile"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (
+                    window.confirm("Would you like to call (929) 386-3248?")
+                  ) {
+                    window.location.href = "tel:929-386-3248";
+                  }
+                }}
+              >
                 <Button
                   variant="outline"
                   size="xl"

@@ -241,7 +241,18 @@ const Header = () => {
                 </a>
               </div>
 
-              <a href="tel:929-386-3248" className="hidden sm:flex">
+              <a
+                href="#"
+                className="hidden sm:flex call-button-mobile"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (
+                    window.confirm("Would you like to call (929) 386-3248?")
+                  ) {
+                    window.location.href = "tel:929-386-3248";
+                  }
+                }}
+              >
                 <Button variant="hero" size="lg" className="flex items-center">
                   <Phone className="w-4 h-4" />
                   Call for Free Estimate
@@ -333,6 +344,14 @@ const Header = () => {
               variant="secondary"
               size="lg"
               className="w-full contractor-button-shadow"
+              onClick={() => {
+                // Close mobile menu first
+                closeMobileMenu();
+                // Show confirmation dialog
+                if (window.confirm("Would you like to call (929) 386-3248?")) {
+                  window.location.href = "tel:929-386-3248";
+                }
+              }}
             >
               <Phone className="w-4 h-4 mr-2" />
               Call (929) 386-3248

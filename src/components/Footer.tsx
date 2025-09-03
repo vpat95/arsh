@@ -112,8 +112,16 @@ const Footer = () => {
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
                 <a
-                  href="tel:929-386-3248"
+                  href="#"
                   className="hover:text-contractor-gold transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (
+                      window.confirm("Would you like to call (929) 386-3248?")
+                    ) {
+                      window.location.href = "tel:929-386-3248";
+                    }
+                  }}
                 >
                   929-386-3248
                 </a>

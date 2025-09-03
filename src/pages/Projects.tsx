@@ -476,7 +476,7 @@ const Projects = () => {
                     setSelectedImage(null);
                     setModalImageLoading(false);
                   }}
-                  className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                  className="absolute top-4 right-4 z-30 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
                 >
                   <svg
                     className="w-6 h-6"
@@ -500,7 +500,7 @@ const Projects = () => {
                     {currentModalIndex > 0 && (
                       <button
                         onClick={goToPreviousImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200 hover:scale-110"
                         aria-label="Previous image"
                       >
                         <svg
@@ -524,7 +524,7 @@ const Projects = () => {
                       (categoryImages[selectedCategory]?.length || 0) - 1 && (
                       <button
                         onClick={goToNextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200 hover:scale-110"
                         aria-label="Next image"
                       >
                         <svg
@@ -545,17 +545,22 @@ const Projects = () => {
                   </>
                 )}
 
-                {/* Image */}
-                <div className="flex items-center justify-center w-full h-full">
+                {/* Image Container with Consistent Dimensions */}
+                <div className="flex items-center justify-center w-full h-full min-h-[60vh] relative">
+                  {/* Background Skeleton - Always Present */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-32 h-32 bg-white/5 rounded-lg"></div>
+                  </div>
+
                   {modalImageLoading ? (
-                    <div className="flex flex-col items-center justify-center space-y-4 animate-in fade-in-0 duration-200">
+                    <div className="relative z-10 flex flex-col items-center justify-center space-y-4 animate-in fade-in-0 duration-200">
                       <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/20 border-t-white"></div>
                       <p className="text-white/80 text-lg">Loading image...</p>
                     </div>
                   ) : (
                     <div
                       key={selectedImage.id}
-                      className="animate-in fade-in-0 duration-300"
+                      className="relative z-10 animate-in fade-in-0 duration-300 w-full h-full flex items-center justify-center"
                     >
                       <OptimizedImage
                         image={selectedImage}
@@ -696,14 +701,20 @@ const Projects = () => {
               >
                 Get Free Quote
               </Button>
-              <Button
-                size="lg"
-                className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary"
+              <a
+                href="#"
+                className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary transition-colors duration-200 rounded-lg call-button-mobile"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (
+                    window.confirm("Would you like to call (929) 386-3248?")
+                  ) {
+                    window.location.href = "tel:929-386-3248";
+                  }
+                }}
               >
-                <a href="tel:929-386-3248" className="flex items-center">
-                  Call (929) 386-3248
-                </a>
-              </Button>
+                Call (929) 386-3248
+              </a>
             </div>
           </div>
         </section>
