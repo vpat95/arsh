@@ -38,49 +38,147 @@ const OptimizedImage = ({
   // Handle HEIC conversion
   useEffect(() => {
     const convertHeicIfNeeded = async () => {
-      console.log("Checking if image needs conversion:", {
-        imageName: image.name,
-        imageUrl: image.url,
-        isHeic: isHeicFile(image),
-        alreadyConverted: displayUrl.includes("blob:"),
-      });
+      // Debug mode - set to true to see detailed logs
+      const DEBUG = true;
+
+      if (DEBUG) {
+        console.log("Checking if image needs conversion:", {
+          imageName: image.name,
+          imageUrl: image.url,
+          isHeic: isHeicFile(image),
+          alreadyConverted: displayUrl.includes("blob:"),
+        });
+      }
 
       // Only convert if it's a HEIC file and not already converted
       if (isHeicFile(image) && !displayUrl.includes("blob:")) {
-        console.log("Starting HEIC conversion for:", image.name);
-        setIsConverting(true);
-        setConversionError(null);
-
-        try {
-          // Create a File object from the image URL for conversion
-          const response = await fetch(image.url);
-          const blob = await response.blob();
-          const file = new File([blob], image.name || "image.heic", {
-            type: blob.type,
-          });
-
-          console.log("Created file for conversion:", file);
-          const result = await convertHeicToJpeg(file);
-
-          // Create a blob URL for the converted image
-          const convertedBlobUrl = URL.createObjectURL(result.file);
-          console.log("Conversion successful, setting display URL");
-          setDisplayUrl(convertedBlobUrl);
-
-          // Clean up the blob URL when component unmounts
-          return () => URL.revokeObjectURL(convertedBlobUrl);
-        } catch (error) {
-          console.error("HEIC conversion failed:", error);
-          setConversionError("Failed to convert HEIC image");
-          // Keep original URL as fallback
-        } finally {
-          setIsConverting(false);
+        // Check if the URL already points to a converted image or if it's already readable
+        if (
+          image.url.includes(".jpg") ||
+          image.url.includes(".jpeg") ||
+          image.url.includes(".png") ||
+          image.url.includes(".webp")
+        ) {
+          if (DEBUG)
+            console.log(
+              "Image URL already points to a readable format, skipping conversion"
+            );
+          return;
         }
+
+        // Test if the original image loads successfully first
+        const testImage = new Image();
+        testImage.onload = () => {
+          if (DEBUG)
+            console.log(
+              "Original image loads successfully, no conversion needed"
+            );
+          setIsConverting(false);
+        };
+        testImage.onerror = async () => {
+          if (DEBUG)
+            console.log("Original image failed to load, attempting conversion");
+
+          // Check the actual content type before attempting conversion
+          try {
+            const response = await fetch(image.url, { method: "HEAD" });
+            const contentType = response.headers.get("content-type");
+            if (DEBUG) console.log("Image content type:", contentType);
+
+            // If it's already a readable format, don't convert
+            if (
+              contentType &&
+              (contentType.includes("jpeg") ||
+                contentType.includes("png") ||
+                contentType.includes("webp"))
+            ) {
+              if (DEBUG)
+                console.log(
+                  "Image is already in readable format, no conversion needed"
+                );
+              setIsConverting(false);
+              return;
+            }
+
+            // Only convert if the original image fails to load
+            await performConversion();
+          } catch (error) {
+            if (DEBUG)
+              console.log(
+                "Could not check content type, attempting conversion"
+              );
+            await performConversion();
+          }
+        };
+        testImage.src = image.url;
       }
     };
 
     convertHeicIfNeeded();
   }, [image.url, image.name]);
+
+  const performConversion = async () => {
+    const DEBUG = true;
+    if (DEBUG) console.log("Starting HEIC conversion for:", image.name);
+    setIsConverting(true);
+    setConversionError(null);
+
+    try {
+      // Create a File object from the image URL for conversion
+      const response = await fetch(image.url);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch image: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const blob = await response.blob();
+      const file = new File([blob], image.name || "image.heic", {
+        type: blob.type,
+      });
+
+      if (DEBUG) console.log("Created file for conversion:", file);
+
+      // Check if the blob is already in a readable format
+      if (
+        blob.type === "image/jpeg" ||
+        blob.type === "image/jpg" ||
+        blob.type === "image/png" ||
+        blob.type === "image/webp"
+      ) {
+        if (DEBUG)
+          console.log("Blob is already in readable format:", blob.type);
+        setIsConverting(false);
+        return;
+      }
+
+      const result = await convertHeicToJpeg(file);
+
+      // Create a blob URL for the converted image
+      const convertedBlobUrl = URL.createObjectURL(result.file);
+      if (DEBUG) console.log("Conversion successful, setting display URL");
+      setDisplayUrl(convertedBlobUrl);
+
+      // Clean up the blob URL when component unmounts
+      return () => URL.revokeObjectURL(convertedBlobUrl);
+    } catch (error) {
+      if (DEBUG) console.error("HEIC conversion failed:", error);
+
+      // If conversion fails, check if the original image is actually readable
+      if (
+        error instanceof Error &&
+        error.message.includes("already browser readable")
+      ) {
+        if (DEBUG) console.log("Image is already readable, using original");
+        setConversionError(null);
+      } else {
+        setConversionError("Failed to convert HEIC image");
+      }
+      // Keep original URL as fallback
+    } finally {
+      setIsConverting(false);
+    }
+  };
 
   const shouldShowBlur = !(
     loadedImages.has(image.id) ||

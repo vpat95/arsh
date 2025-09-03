@@ -22,6 +22,16 @@ export const convertHeicToJpeg = async (file: File): Promise<ConversionResult> =
       };
     }
 
+    // Check if the file is already in a browser-readable format
+    if (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png' || file.type === 'image/webp') {
+      console.log('File is already in browser-readable format:', file.type);
+      return {
+        file,
+        originalType: file.type,
+        convertedType: file.type
+      };
+    }
+
     // Convert HEIC to JPEG silently
     const convertedBlob = await heic2any({
       blob: file,
@@ -49,6 +59,20 @@ export const convertHeicToJpeg = async (file: File): Promise<ConversionResult> =
 
   } catch (error) {
     console.error('HEIC conversion failed:', error);
+    
+    // Check if it's a specific error from heic2any about already readable images
+    if (error && typeof error === 'object' && 'message' in error) {
+      const errorMessage = (error as any).message;
+      if (errorMessage.includes('already browser readable')) {
+        console.log('Image is already browser readable, returning original');
+        return {
+          file,
+          originalType: file.type,
+          convertedType: file.type
+        };
+      }
+    }
+    
     throw new Error('Failed to convert HEIC image. Please use JPEG or PNG instead.');
   }
 };
