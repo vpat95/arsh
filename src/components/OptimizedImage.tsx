@@ -30,10 +30,16 @@ const OptimizedImage = ({
   const [conversionError, setConversionError] = useState<string | null>(null);
 
   const isLocalImage = image.url.includes("assets/");
-  const { optimizedUrl } = useOptimizedImage(image.url, {
-    width: 800,
-    quality: 80,
-  });
+  const hasConvertedHeic = displayUrl.includes("blob:") && isHeicFile(image);
+
+  // Only use optimization hook if we don't have a converted HEIC image
+  const { optimizedUrl } = useOptimizedImage(
+    hasConvertedHeic ? "" : image.url,
+    {
+      width: 800,
+      quality: 80,
+    }
+  );
 
   // Handle HEIC conversion
   useEffect(() => {
@@ -194,9 +200,11 @@ const OptimizedImage = ({
       isLoaded: loadedImages.has(image.id),
       isPreloaded: isImagePreloaded(image.url),
       isLocal: isLocalImage,
+      hasConvertedHeic,
       optimizedUrl: !!optimizedUrl,
       isConverting,
       displayUrl: displayUrl.substring(0, 50) + "...",
+      finalSrc: hasConvertedHeic ? displayUrl : optimizedUrl || displayUrl,
     });
   }
 
@@ -219,7 +227,7 @@ const OptimizedImage = ({
         </div>
       ) : (
         <img
-          src={optimizedUrl || displayUrl} // Use converted URL if available
+          src={hasConvertedHeic ? displayUrl : optimizedUrl || displayUrl} // Prioritize converted HEIC
           alt={image.name}
           className={`${className} ${
             shouldShowBlur ? "blur-md scale-110" : "blur-none"
