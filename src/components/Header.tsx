@@ -14,7 +14,7 @@ const Header = () => {
   // Smooth scroll function for navigation links
   const handleSmoothScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    targetId: string
+    targetId: string,
   ) => {
     e.preventDefault();
     console.log("handleSmoothScroll called with targetId:", targetId); // Debug log
@@ -111,7 +111,7 @@ const Header = () => {
       if (isAboutSection) {
         // Check if Elfsight widget is already loaded
         const elfsightWidget = document.querySelector(
-          ".elfsight-app-ff572c65-3037-4b9a-8aac-b135cb9612ca"
+          ".elfsight-app-ff572c65-3037-4b9a-8aac-b135cb9612ca",
         );
         const isElfsightLoaded =
           elfsightWidget && !elfsightWidget.classList.contains("opacity-0");
@@ -126,7 +126,7 @@ const Header = () => {
             setTimeout(scrollToTarget, 200);
             window.removeEventListener(
               "elfsightWidgetLoaded",
-              handleElfsightLoaded
+              handleElfsightLoaded,
             );
           };
 
@@ -136,7 +136,7 @@ const Header = () => {
           setTimeout(() => {
             window.removeEventListener(
               "elfsightWidgetLoaded",
-              handleElfsightLoaded
+              handleElfsightLoaded,
             );
             scrollToTarget();
           }, 3000);
@@ -232,7 +232,7 @@ const Header = () => {
                   <Facebook className="w-6 h-6" />
                 </a>
                 <a
-                  href="https://www.instagram.com/arsh.c.contractors.inc/"
+                  href="https://www.instagram.com/arsh.contractors.llc/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 text-[#E4405F] hover:text-[#D63384] hover:scale-110 transition-all duration-200"

@@ -34,7 +34,7 @@ const Footer = () => {
                 <Facebook className="w-7 h-7" />
               </a>
               <a
-                href="https://www.instagram.com/arsh.c.contractors.inc/"
+                href="https://www.instagram.com/arsh.contractors.llc/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#E4405F] hover:text-[#D63384] hover:scale-110 transition-all duration-200"
@@ -149,7 +149,7 @@ const Footer = () => {
         <div className="border-t border-gray-700 pt-8">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             <div className="text-gray-400 text-sm">
-              © 2024 Arsh Consultancy & Contractors Inc. All rights reserved.
+              © 2024 Arsh Consultancy & Contractors LLC. All rights reserved.
             </div>
             <div className="flex space-x-6 text-gray-400 text-sm">
               <a
